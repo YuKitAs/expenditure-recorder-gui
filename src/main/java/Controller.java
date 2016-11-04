@@ -1,19 +1,22 @@
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 
+import javax.swing.text.DateFormatter;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +72,8 @@ public class Controller implements Initializable {
 
     private ObservableList<Record> filteredRecords = FXCollections.observableArrayList();
 
-    private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Weekly", "Monthly");
+    private final ObservableList<String> timeRanges = FXCollections.observableArrayList(
+            "All", "Today", "Last 7 Days", "Last 30 Days");
 
     private int totalAmount;
 
@@ -81,30 +85,30 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initDatePicker();
         initTimeRangeFilter();
-
-        recordTable.setEditable(true);
 
         setAddAction();
         setClearAction();
         setDeleteAction();
+        setFilterAction();
+    }
+
+    private void initDatePicker() {
+        datePicker.setDayCellFactory(datePicker -> {
+            return new DateCell() {
+                @Override
+                public void updateItem(LocalDate item, boolean empty) {
+                    if (item.isAfter(LocalDate.now())) {
+                        this.setDisable(true);
+                    }
+                }
+            };
+        });
     }
 
     private void initTimeRangeFilter() {
         timeRangeFilter.setItems(timeRanges);
-    }
-
-
-    private void setClearAction() {
-        clearButton.setOnAction(event -> {
-            itemField.clear();
-            amountField.clear();
-            datePicker.getEditor().clear();
-
-            itemErrorText.setText("");
-            amountErrorText.setText("");
-            dateErrorText.setText("");
-        });
     }
 
     private void setAddAction() {
@@ -140,8 +144,20 @@ public class Controller implements Initializable {
             } catch (NullPointerException | NumberFormatException e) {
             }
 
-            updateTotalAmount();
+            updateTotalAmount(records);
             persistentRecords();
+        });
+    }
+
+    private void setClearAction() {
+        clearButton.setOnAction(event -> {
+            itemField.clear();
+            amountField.clear();
+            datePicker.getEditor().clear();
+
+            itemErrorText.setText("");
+            amountErrorText.setText("");
+            dateErrorText.setText("");
         });
     }
 
@@ -151,12 +167,65 @@ public class Controller implements Initializable {
 
             recordTable.setItems(records);
 
-            updateTotalAmount();
+            updateTotalAmount(records);
             persistentRecords();
         });
     }
 
-    private void updateTotalAmount() {
+    private void setFilterAction() {
+        timeRangeFilter.setOnAction(event -> {
+            filteredRecords.clear();
+            String timeRange = timeRangeFilter.getSelectionModel().getSelectedItem();
+
+            switch (timeRange) {
+                case "All":
+                    recordTable.setItems(records);
+                    updateTotalAmount(records);
+                    break;
+                case "Today":
+                    records.forEach(record -> {
+                        LocalDate date = LocalDate.parse(record.getDate());
+
+                        if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
+                            filteredRecords.add(record);
+                        }
+                    });
+
+                    recordTable.setItems(filteredRecords);
+                    updateTotalAmount(filteredRecords);
+
+                    break;
+                case "Last 7 Days":
+                    records.forEach(record -> {
+                        LocalDate date = LocalDate.parse(record.getDate());
+
+                        if (date.isAfter(LocalDate.now().minusWeeks(1))) {
+                            filteredRecords.add(record);
+                        }
+                    });
+
+                    recordTable.setItems(filteredRecords);
+                    updateTotalAmount(filteredRecords);
+
+                    break;
+                case "Last 30 Days":
+                    records.forEach(record -> {
+                        LocalDate date = LocalDate.parse(record.getDate());
+
+                        if (date.isAfter(LocalDate.now().minusMonths(1))) {
+                            filteredRecords.add(record);
+                        }
+                    });
+
+                    recordTable.setItems(filteredRecords);
+                    updateTotalAmount(filteredRecords);
+
+                    break;
+            }
+        });
+    }
+
+    private void updateTotalAmount(ObservableList<Record> records) {
         totalAmount = 0;
 
         records.forEach(record -> totalAmount += record.getAmount());

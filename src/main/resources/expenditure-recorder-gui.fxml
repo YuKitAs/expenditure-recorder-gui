@@ -29,7 +29,7 @@
             <TextField fx:id="amountField" layoutX="290.0" layoutY="44.0" prefHeight="25.0" prefWidth="74.0" />
             <Button fx:id="addButton" layoutX="238.0" layoutY="104.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Add" />
             <Button fx:id="clearButton" layoutX="314.0" layoutY="104.0" mnemonicParsing="false" text="Clear" />
-            <ComboBox fx:id="timeRangeFilter" layoutX="420.0" layoutY="171.0" prefHeight="25.0" prefWidth="130.0" promptText="Time range" />
+            <ComboBox fx:id="timeRangeFilter" layoutX="412.0" layoutY="171.0" prefHeight="25.0" prefWidth="138.0" promptText="Time range" />
             <TableView fx:id="recordTable" layoutX="49.0" layoutY="206.0" prefHeight="240.0" prefWidth="502.0">
               <columns>
                 <TableColumn fx:id="itemCol" prefWidth="167.0" text="Item" />
