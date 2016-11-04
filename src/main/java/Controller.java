@@ -93,13 +93,14 @@ public class Controller implements Initializable {
 
 
     private void setClearAction() {
-        clearButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                itemField.clear();
-                amountField.clear();
-                datePicker.getEditor().clear();
-            }
+        clearButton.setOnAction(event -> {
+            itemField.clear();
+            amountField.clear();
+            datePicker.getEditor().clear();
+
+            itemErrorText.setText("");
+            amountErrorText.setText("");
+            dateErrorText.setText("");
         });
     }
 
@@ -115,8 +116,8 @@ public class Controller implements Initializable {
                     return;
                 }
 
-                if (!amountField.getText().matches("[0-9]+")) {
-                    amountErrorText.setText("Please enter an integer.");
+                if (!amountField.getText().matches("[1-9]+[0-9]*")) {
+                    amountErrorText.setText("Please enter a valid integer.");
                     return;
                 }
 
