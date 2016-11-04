@@ -133,11 +133,11 @@ public class Controller implements Initializable {
                     return;
                 }
 
-                records.add(new Record(itemField.getText(), Integer.parseInt(amountField.getText()), datePicker
+                records.add(new Record(itemField.getText(), "€ " + amountField.getText(), datePicker
                         .getValue().toString()));
 
                 itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
-                amountCol.setCellValueFactory(new PropertyValueFactory<Record, Integer>("amount"));
+                amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
                 dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
 
                 recordTable.setItems(records);
@@ -228,7 +228,7 @@ public class Controller implements Initializable {
     private void updateTotalAmount(ObservableList<Record> records) {
         totalAmount = 0;
 
-        records.forEach(record -> totalAmount += record.getAmount());
+        records.forEach(record -> totalAmount += Integer.parseInt(record.getAmount().substring(2)));
 
         totalAmountText.setText("€ " + Integer.toString(totalAmount));
     }

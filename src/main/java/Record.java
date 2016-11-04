@@ -3,13 +3,13 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class Record {
     private final SimpleStringProperty item;
-    private final SimpleIntegerProperty amount;
+    private final SimpleStringProperty amount;
     private final SimpleStringProperty date;
 
-    public Record(String item, int amount, String date) {
+    public Record(String item, String amount, String date) {
 
         this.item = new SimpleStringProperty(item);
-        this.amount = new SimpleIntegerProperty(amount);
+        this.amount = new SimpleStringProperty(amount);
         this.date = new SimpleStringProperty(date);
     }
 
@@ -21,11 +21,11 @@ public class Record {
         this.item.set(item);
     }
 
-    public int getAmount() {
+    public String getAmount() {
         return amount.get();
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(String amount) {
         this.amount.set(amount);
     }
 
@@ -33,7 +33,7 @@ public class Record {
         return date.get();
     }
 
-    public void setDate() {
-        this.date.set(String.valueOf(date));
+    public void setDate(String date) {
+        this.date.set(date);
     }
 }

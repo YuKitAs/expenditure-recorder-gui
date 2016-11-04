@@ -14,8 +14,8 @@ public class ControllerTest {
     private final Controller controller = new Controller();
 
     private final ObservableList<Record> records = FXCollections.observableArrayList(
-            new Record("foo", 1, "2012-01-01"),
-            new Record("bar", 42, "2016-11-06"));
+            new Record("foo", "1", "2012-01-01"),
+            new Record("bar", "42", "2016-11-06"));
 
     private Method method;
 
@@ -34,11 +34,11 @@ public class ControllerTest {
         Record rec2 = plainRecordList.get(1);
 
         assertThat(rec1.getItem()).isEqualTo("foo");
-        assertThat(rec1.getAmount()).isEqualTo(1);
+        assertThat(rec1.getAmount()).isEqualTo("1");
         assertThat(rec1.getDate()).isEqualTo("2012-01-01");
 
         assertThat(rec2.getItem()).isEqualTo("bar");
-        assertThat(rec2.getAmount()).isEqualTo(42);
+        assertThat(rec2.getAmount()).isEqualTo("42");
         assertThat(rec2.getDate()).isEqualTo("2016-11-06");
     }
 }
