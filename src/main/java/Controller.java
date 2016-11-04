@@ -14,6 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -65,6 +66,8 @@ public class Controller implements Initializable {
     private Text dateErrorText;
 
     private ObservableList<Record> records = FXCollections.observableArrayList();
+
+    private ObservableList<Record> filteredRecords = FXCollections.observableArrayList();
 
     private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Weekly", "Monthly");
 
@@ -168,6 +171,10 @@ public class Controller implements Initializable {
     }
 
     private List<Record> convertToPlainList(ObservableList<Record> records) {
-        return Collections.emptyList();
+        List<Record> plainRecordList = new ArrayList<>();
+
+        plainRecordList.addAll(records);
+
+        return plainRecordList;
     }
 }
