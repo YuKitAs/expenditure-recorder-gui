@@ -171,7 +171,7 @@ public class Controller implements Initializable {
 
             records.remove(recordTable.getSelectionModel().getSelectedItem());
 
-            recordTable.setItems(records);
+            updateRecords();
 
             updateTotalAmount(records);
 
@@ -269,5 +269,9 @@ public class Controller implements Initializable {
         plainRecordList.addAll(records);
 
         return plainRecordList;
+    }
+
+    public TimeRange getCurrentTimeRange() {
+        return currentTimeRange;
     }
 }
