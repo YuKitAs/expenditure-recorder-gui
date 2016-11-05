@@ -68,6 +68,14 @@ public class Controller implements Initializable {
     @FXML
     private Text deleteErrorText;
 
+    @FXML
+    private RadioButton filterBoxRadioButton;
+
+    @FXML
+    private RadioButton filterPickerRadioButton;
+
+    private final ToggleGroup radioButtonGroup = new ToggleGroup();
+
     private ObservableList<Record> records = FXCollections.observableArrayList();
 
     private ObservableList<Record> filteredRecords = FXCollections.observableArrayList();
@@ -89,11 +97,13 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initDatePicker();
         initFilterBox();
+        initRadioButton();
 
         setAddButtonAction();
         setClearButtonAction();
         setDeleteButtonAction();
         setFilterBoxAction();
+        setRadioButtonAction();
     }
 
     private void initDatePicker() {
@@ -111,6 +121,17 @@ public class Controller implements Initializable {
 
     private void initFilterBox() {
         filterBox.setItems(timeRanges);
+        filterBox.getSelectionModel().selectFirst();
+    }
+
+    private void initRadioButton() {
+        filterBoxRadioButton.setToggleGroup(radioButtonGroup);
+        filterPickerRadioButton.setToggleGroup(radioButtonGroup);
+    }
+
+    private void setRadioButtonAction() {
+        filterBoxRadioButton.setOnAction(event -> setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem()));
+        filterPickerRadioButton.setOnAction(event -> setCurrentTimeRange("Custom"));
     }
 
     private void setAddButtonAction() {
@@ -201,6 +222,9 @@ public class Controller implements Initializable {
             case "Last 30 Days":
                 currentTimeRange = TimeRange.LAST_30_DAYS;
                 break;
+            case "Custom":
+                currentTimeRange = TimeRange.CUSTOM;
+                break;
         }
     }
 
@@ -239,6 +263,18 @@ public class Controller implements Initializable {
                 LocalDate date = LocalDate.parse(record.getDate());
 
                 if (date.isAfter(LocalDate.now().minusMonths(1))) {
+                    filteredRecords.add(record);
+                }
+            });
+
+            recordTable.setItems(filteredRecords);
+
+            updateTotalAmount(filteredRecords);
+        } else if (currentTimeRange.equals(TimeRange.CUSTOM)) {
+            records.forEach(record -> {
+                LocalDate date = LocalDate.parse(record.getDate());
+
+                if (date.isAfter(fromDatePicker.getValue()) && date.isBefore(toDatePicker.getValue())) {
                     filteredRecords.add(record);
                 }
             });

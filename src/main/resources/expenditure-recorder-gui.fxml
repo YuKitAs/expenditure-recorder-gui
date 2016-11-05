@@ -29,7 +29,7 @@
             <TextField fx:id="amountField" layoutX="292.0" layoutY="44.0" prefHeight="25.0" prefWidth="61.0" />
             <Button fx:id="addButton" layoutX="238.0" layoutY="104.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Add" />
             <Button fx:id="clearButton" layoutX="314.0" layoutY="104.0" mnemonicParsing="false" text="Clear" />
-            <ComboBox fx:id="filterBox" layoutX="54.0" layoutY="164.0" prefHeight="25.0" prefWidth="138.0" promptText="Time range" />
+            <ComboBox fx:id="filterBox" layoutX="69.0" layoutY="164.0" prefHeight="25.0" prefWidth="138.0" />
             <TableView fx:id="recordTable" layoutX="49.0" layoutY="205.0" prefHeight="240.0" prefWidth="502.0">
               <columns>
                 <TableColumn fx:id="itemCol" prefWidth="167.0" text="Item" />
@@ -57,6 +57,8 @@
             <Label layoutX="238.0" layoutY="169.0" text="From" />
             <Label layoutX="405.0" layoutY="169.0" text="To" />
             <Text fx:id="deleteErrorText" fill="RED" layoutX="313.0" layoutY="475.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="159.0" />
+            <RadioButton fx:id="filterPickerRadioButton" layoutX="215.0" layoutY="168.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" />
+            <RadioButton fx:id="filterBoxRadioButton" layoutX="45.0" layoutY="168.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" />
          </children>
       </Pane>
    </children>
