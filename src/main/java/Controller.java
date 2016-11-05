@@ -270,8 +270,4 @@ public class Controller implements Initializable {
 
         return plainRecordList;
     }
-
-    public TimeRange getCurrentTimeRange() {
-        return currentTimeRange;
-    }
 }
