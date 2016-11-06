@@ -87,6 +87,10 @@ public class Controller implements Initializable {
 
     private int totalAmount;
 
+    private LocalDate fromDate = null;
+
+    private LocalDate toDate = null;
+
     private final RecordsPersistence recordsPersistence;
 
     public Controller() {
@@ -104,19 +108,29 @@ public class Controller implements Initializable {
         setDeleteButtonAction();
         setFilterBoxAction();
         setRadioButtonAction();
+        setFromDatePickerAction();
+        setToDatePickerAction();
+    }
+
+    private void filterDateInDatePicker(DatePicker filteredDatePicker, LocalDate dateLimit, boolean dateAfterAllowed) {
+        if (dateLimit == null) {
+            return;
+        }
+
+        filteredDatePicker.setDayCellFactory(dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                if (item.isAfter(dateLimit) && !dateAfterAllowed) {
+                    this.setDisable(true);
+                } else if (item.isBefore(dateLimit) && dateAfterAllowed) {
+                    this.setDisable(true);
+                }
+            }
+        });
     }
 
     private void initDatePicker() {
-        datePicker.setDayCellFactory(datePicker -> {
-            return new DateCell() {
-                @Override
-                public void updateItem(LocalDate item, boolean empty) {
-                    if (item.isAfter(LocalDate.now())) {
-                        this.setDisable(true);
-                    }
-                }
-            };
-        });
+        filterDateInDatePicker(datePicker, LocalDate.now(), false);
     }
 
     private void initFilterBox() {
@@ -127,11 +141,6 @@ public class Controller implements Initializable {
     private void initRadioButton() {
         filterBoxRadioButton.setToggleGroup(radioButtonGroup);
         filterPickerRadioButton.setToggleGroup(radioButtonGroup);
-    }
-
-    private void setRadioButtonAction() {
-        filterBoxRadioButton.setOnAction(event -> setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem()));
-        filterPickerRadioButton.setOnAction(event -> setCurrentTimeRange("Custom"));
     }
 
     private void setAddButtonAction() {
@@ -200,11 +209,47 @@ public class Controller implements Initializable {
         });
     }
 
-    private void setFilterBoxAction() {
-        filterBox.setOnAction(event -> {
+    private void setRadioButtonAction() {
+        filterBoxRadioButton.setOnAction(event -> {
             setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
 
             updateRecords();
+        });
+
+        filterPickerRadioButton.setOnAction(event -> {
+            setCurrentTimeRange("Custom");
+
+            updateRecords();
+        });
+    }
+
+    private void setFilterBoxAction() {
+        filterBox.setOnAction(event -> {
+            if (filterBoxRadioButton.isSelected()) {
+                setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
+
+                updateRecords();
+            }
+        });
+    }
+
+    private void setFromDatePickerAction() {
+        fromDatePicker.setOnAction(event -> {
+            fromDate = fromDatePicker.getValue();
+
+            if (filterPickerRadioButton.isSelected()) {
+                updateRecords();
+            }
+        });
+    }
+
+    private void setToDatePickerAction() {
+        toDatePicker.setOnAction(event -> {
+            toDate = toDatePicker.getValue();
+
+            if (filterPickerRadioButton.isSelected()) {
+                updateRecords();
+            }
         });
     }
 
@@ -271,11 +316,31 @@ public class Controller implements Initializable {
 
             updateTotalAmount(filteredRecords);
         } else if (currentTimeRange.equals(TimeRange.CUSTOM)) {
+            if (fromDate == null && toDate == null) {
+                recordTable.setItems(records);
+                updateTotalAmount(records);
+
+                return;
+            }
+
+            filterDateInDatePicker(fromDatePicker, toDate, false);
+            filterDateInDatePicker(toDatePicker, fromDate, true);
+
             records.forEach(record -> {
                 LocalDate date = LocalDate.parse(record.getDate());
 
-                if (date.isAfter(fromDatePicker.getValue()) && date.isBefore(toDatePicker.getValue())) {
-                    filteredRecords.add(record);
+                if (fromDate == null) {
+                    if (date.isBefore(toDate) || date.isEqual(toDate)) {
+                        filteredRecords.add(record);
+                    }
+                } else if (toDate == null) {
+                    if (date.isAfter(fromDate) || date.isEqual(fromDate)) {
+                        filteredRecords.add(record);
+                    }
+                } else {
+                    if ((date.isAfter(fromDate) || date.isEqual(fromDate)) && (date.isBefore(toDate) || date.isEqual(toDate))) {
+                        filteredRecords.add(record);
+                    }
                 }
             });
 
