@@ -280,74 +280,90 @@ public class Controller implements Initializable {
             recordTable.setItems(records);
             updateTotalAmount(records);
         } else if (currentTimeRange.equals(TimeRange.TODAY)) {
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
-
-                if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
-                    filteredRecords.add(record);
-                }
-            });
-
-            recordTable.setItems(filteredRecords);
-
-            updateTotalAmount(filteredRecords);
+            ShowRecordsOfToday();
         } else if (currentTimeRange.equals(TimeRange.LAST_7_DAYS)) {
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
-
-                if (date.isAfter(LocalDate.now().minusWeeks(1))) {
-                    filteredRecords.add(record);
-                }
-            });
-
-            recordTable.setItems(filteredRecords);
-
-            updateTotalAmount(filteredRecords);
+            ShowRecordsInLast7Days();
         } else if (currentTimeRange.equals(TimeRange.LAST_30_DAYS)) {
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
+            ShowRecordsInLast30Days();
+        } else if (currentTimeRange.equals(TimeRange.CUSTOM)) {
+            showRecordsInCustomTimeRange();
+        }
+    }
 
-                if (date.isAfter(LocalDate.now().minusMonths(1))) {
+    private void ShowRecordsOfToday() {
+        records.forEach(record -> {
+            LocalDate date = LocalDate.parse(record.getDate());
+
+            if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
+                filteredRecords.add(record);
+            }
+        });
+
+        recordTable.setItems(filteredRecords);
+
+        updateTotalAmount(filteredRecords);
+    }
+
+    private void ShowRecordsInLast7Days() {
+        records.forEach(record -> {
+            LocalDate date = LocalDate.parse(record.getDate());
+
+            if (date.isAfter(LocalDate.now().minusWeeks(1))) {
+                filteredRecords.add(record);
+            }
+        });
+
+        recordTable.setItems(filteredRecords);
+
+        updateTotalAmount(filteredRecords);
+    }
+
+    private void ShowRecordsInLast30Days() {
+        records.forEach(record -> {
+            LocalDate date = LocalDate.parse(record.getDate());
+
+            if (date.isAfter(LocalDate.now().minusMonths(1))) {
+                filteredRecords.add(record);
+            }
+        });
+
+        recordTable.setItems(filteredRecords);
+
+        updateTotalAmount(filteredRecords);
+    }
+
+    private void showRecordsInCustomTimeRange() {
+        if (fromDate == null && toDate == null) {
+            recordTable.setItems(records);
+            updateTotalAmount(records);
+
+            return;
+        }
+
+        filterDateInDatePicker(fromDatePicker, toDate, false);
+        filterDateInDatePicker(toDatePicker, fromDate, true);
+
+        records.forEach(record -> {
+            LocalDate date = LocalDate.parse(record.getDate());
+
+            if (fromDate == null) {
+                if (date.isBefore(toDate) || date.isEqual(toDate)) {
                     filteredRecords.add(record);
                 }
-            });
-
-            recordTable.setItems(filteredRecords);
-
-            updateTotalAmount(filteredRecords);
-        } else if (currentTimeRange.equals(TimeRange.CUSTOM)) {
-            if (fromDate == null && toDate == null) {
-                recordTable.setItems(records);
-                updateTotalAmount(records);
-
-                return;
-            }
-
-            filterDateInDatePicker(fromDatePicker, toDate, false);
-            filterDateInDatePicker(toDatePicker, fromDate, true);
-
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
-
-                if (fromDate == null) {
-                    if (date.isBefore(toDate) || date.isEqual(toDate)) {
-                        filteredRecords.add(record);
-                    }
-                } else if (toDate == null) {
-                    if (date.isAfter(fromDate) || date.isEqual(fromDate)) {
-                        filteredRecords.add(record);
-                    }
-                } else {
-                    if ((date.isAfter(fromDate) || date.isEqual(fromDate)) && (date.isBefore(toDate) || date.isEqual(toDate))) {
-                        filteredRecords.add(record);
-                    }
+            } else if (toDate == null) {
+                if (date.isAfter(fromDate) || date.isEqual(fromDate)) {
+                    filteredRecords.add(record);
                 }
-            });
+            } else {
+                if ((date.isAfter(fromDate) || date.isEqual(fromDate)) && (date.isBefore(toDate) || date.isEqual(toDate))) {
+                    filteredRecords.add(record);
+                }
+            }
+        });
 
-            recordTable.setItems(filteredRecords);
+        recordTable.setItems(filteredRecords);
 
-            updateTotalAmount(filteredRecords);
-        }
+        updateTotalAmount(filteredRecords);
     }
 
     private void updateTotalAmount(ObservableList<Record> records) {
