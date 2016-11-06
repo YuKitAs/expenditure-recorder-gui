@@ -103,13 +103,13 @@ public class Controller implements Initializable {
         initFilterBox();
         initRadioButton();
 
-        setAddButtonAction();
-        setClearButtonAction();
-        setDeleteButtonAction();
-        setFilterBoxAction();
-        setRadioButtonAction();
-        setFromDatePickerAction();
-        setToDatePickerAction();
+        setAddButtonOnAction();
+        setClearButtonOnAction();
+        setDeleteButtonOnAction();
+        setFilterBoxOnAction();
+        setRadioButtonOnAction();
+        setFromDatePickerOnAction();
+        setToDatePickerOnAction();
     }
 
     private void filterDateInDatePicker(DatePicker filteredDatePicker, LocalDate dateLimit, boolean dateAfterAllowed) {
@@ -143,7 +143,7 @@ public class Controller implements Initializable {
         filterPickerRadioButton.setToggleGroup(radioButtonGroup);
     }
 
-    private void setAddButtonAction() {
+    private void setAddButtonOnAction() {
         addButton.setOnAction(event -> {
             itemErrorText.setText("");
             amountErrorText.setText("");
@@ -180,7 +180,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void setClearButtonAction() {
+    private void setClearButtonOnAction() {
         clearButton.setOnAction(event -> {
             itemField.clear();
             amountField.clear();
@@ -192,7 +192,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void setDeleteButtonAction() {
+    private void setDeleteButtonOnAction() {
         deleteButton.setOnAction(event -> {
             if (recordTable.getSelectionModel().getSelectedItem() == null) {
                 deleteErrorText.setText("Please select a record.");
@@ -209,7 +209,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void setRadioButtonAction() {
+    private void setRadioButtonOnAction() {
         filterBoxRadioButton.setOnAction(event -> {
             setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
 
@@ -223,7 +223,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void setFilterBoxAction() {
+    private void setFilterBoxOnAction() {
         filterBox.setOnAction(event -> {
             if (filterBoxRadioButton.isSelected()) {
                 setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
@@ -233,7 +233,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void setFromDatePickerAction() {
+    private void setFromDatePickerOnAction() {
         fromDatePicker.setOnAction(event -> {
             fromDate = fromDatePicker.getValue();
 
@@ -243,7 +243,7 @@ public class Controller implements Initializable {
         });
     }
 
-    private void setToDatePickerAction() {
+    private void setToDatePickerOnAction() {
         toDatePicker.setOnAction(event -> {
             toDate = toDatePicker.getValue();
 
