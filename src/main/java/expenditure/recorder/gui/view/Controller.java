@@ -1,3 +1,7 @@
+package expenditure.recorder.gui.view;
+
+import expenditure.recorder.gui.model.Record;
+import expenditure.recorder.gui.model.TimeRange;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,7 +19,7 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
     @FXML
-    private javafx.scene.control.TextField itemField;
+    private TextField itemField;
 
     @FXML
     private TextField amountField;
@@ -91,10 +95,10 @@ public class Controller implements Initializable {
 
     private LocalDate toDate = null;
 
-    private final RecordsPersistence recordsPersistence;
+    // private final RecordsPersistence recordsPersistence;
 
     public Controller() {
-        recordsPersistence = null;
+        // recordsPersistence = null;
     }
 
     @Override
@@ -377,7 +381,7 @@ public class Controller implements Initializable {
     private void persistentRecords() {
         List<Record> plainRecordList = convertToPlainList(records);
 
-        recordsPersistence.persistent(plainRecordList);
+        // recordsPersistence.persistent(plainRecordList);
     }
 
     private List<Record> convertToPlainList(ObservableList<Record> records) {

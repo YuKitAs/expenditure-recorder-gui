@@ -1,3 +1,6 @@
+import expenditure.recorder.gui.model.Record;
+import expenditure.recorder.gui.model.TimeRange;
+import expenditure.recorder.gui.view.Controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.junit.Before;

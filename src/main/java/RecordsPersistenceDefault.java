@@ -1,3 +1,5 @@
+import expenditure.recorder.gui.model.Record;
+
 import java.util.List;
 
 public class RecordsPersistenceDefault implements RecordsPersistence {
