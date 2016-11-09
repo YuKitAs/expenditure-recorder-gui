@@ -114,6 +114,7 @@ public class Controller implements Initializable {
         setRadioButtonOnAction();
         setFromDatePickerOnAction();
         setToDatePickerOnAction();
+        setRecordTableOnAction();
     }
 
     private void filterDateInDatePicker(DatePicker filteredDatePicker, LocalDate dateLimit, boolean dateAfterAllowed) {
@@ -152,6 +153,7 @@ public class Controller implements Initializable {
             itemErrorText.setText("");
             amountErrorText.setText("");
             dateErrorText.setText("");
+            deleteErrorText.setText("");
 
             try {
                 if (itemField.getText().isEmpty()) {
@@ -210,6 +212,14 @@ public class Controller implements Initializable {
             updateTotalAmount(records);
 
             // persistentRecords();
+        });
+    }
+
+    private void setRecordTableOnAction() {
+        recordTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                deleteErrorText.setText("");
+            }
         });
     }
 
