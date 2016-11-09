@@ -70,9 +70,6 @@ public class Controller implements Initializable {
     private Text dateErrorText;
 
     @FXML
-    private Text deleteErrorText;
-
-    @FXML
     private RadioButton filterBoxRadioButton;
 
     @FXML
@@ -106,6 +103,7 @@ public class Controller implements Initializable {
         initDatePicker();
         initFilterBox();
         initRadioButton();
+        deleteButton.setDisable(true);
 
         setAddButtonOnAction();
         setClearButtonOnAction();
@@ -153,7 +151,6 @@ public class Controller implements Initializable {
             itemErrorText.setText("");
             amountErrorText.setText("");
             dateErrorText.setText("");
-            deleteErrorText.setText("");
 
             try {
                 if (itemField.getText().isEmpty()) {
@@ -200,16 +197,14 @@ public class Controller implements Initializable {
 
     private void setDeleteButtonOnAction() {
         deleteButton.setOnAction(event -> {
-            if (recordTable.getSelectionModel().getSelectedItem() == null) {
-                deleteErrorText.setText("Please select a record.");
-                return;
-            }
 
             records.remove(recordTable.getSelectionModel().getSelectedItem());
 
             updateRecords();
 
             updateTotalAmount(records);
+
+            deleteButton.setDisable(true);
 
             // persistentRecords();
         });
@@ -218,7 +213,7 @@ public class Controller implements Initializable {
     private void setRecordTableOnAction() {
         recordTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                deleteErrorText.setText("");
+                deleteButton.setDisable(false);
             }
         });
     }

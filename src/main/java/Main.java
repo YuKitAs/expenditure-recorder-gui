@@ -10,7 +10,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("expenditure-recorder-gui.fxml"));
         primaryStage.setTitle("Expenditure Recorder");
-        Scene scene = new Scene(root, 600, 500);
+        Scene scene = new Scene(root, 501, 500);
         scene.getStylesheets().addAll(this.getClass().getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
