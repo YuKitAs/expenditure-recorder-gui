@@ -34,7 +34,7 @@
             <TextField fx:id="itemField" layoutX="110.0" layoutY="31.0" prefHeight="25.0" prefWidth="130.0" />
             <TextField fx:id="amountField" layoutX="110.0" layoutY="79.0" prefHeight="25.0" prefWidth="130.0" />
             <Button fx:id="addButton" layoutX="21.0" layoutY="180.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Add" />
-            <Button fx:id="clearButton" layoutX="95.0" layoutY="179.0" mnemonicParsing="false" prefWidth="63.0" text="Clear" />
+            <Button fx:id="clearButton" layoutX="95.0" layoutY="180.0" mnemonicParsing="false" prefWidth="63.0" text="Clear" />
             <ComboBox fx:id="filterBox" layoutX="342.0" layoutY="31.0" prefHeight="25.0" prefWidth="141.0" />
             <TableView fx:id="recordTable" layoutY="220.0" maxWidth="501.0" prefHeight="280.0" prefWidth="501.0">
               <columns>
@@ -46,7 +46,7 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
             </TableView>
-            <Button fx:id="deleteButton" layoutX="170.0" layoutY="179.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Delete" />
+            <Button fx:id="deleteButton" layoutX="170.0" layoutY="180.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Delete" />
             <Text fill="RED" layoutX="227.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="147.0" />
             <Text fill="RED" layoutX="136.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="147.0" />
             <Text fx:id="itemErrorText" fill="#805500" layoutX="110.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="147.0" />
@@ -60,7 +60,7 @@
                </font></Label>
             <Label layoutX="322.0" layoutY="84.0" text="From" />
             <Label layoutX="341.0" layoutY="132.0" text="To" />
-            <RadioButton fx:id="filterPickerRadioButton" layoutX="296.0" layoutY="82.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" />
+            <RadioButton fx:id="filterPickerRadioButton" layoutX="296.0" layoutY="83.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" />
             <RadioButton fx:id="filterBoxRadioButton" layoutX="296.0" layoutY="35.0" mnemonicParsing="false" prefHeight="0.0" prefWidth="0.0" />
             <Label layoutX="252.0" layoutY="183.0" text="Total Spent: ">
                <font>
