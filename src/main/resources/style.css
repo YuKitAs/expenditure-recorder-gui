@@ -1,5 +1,9 @@
+@font-face {
+    font-family: "KG Traditional Fractions", "Roundo SemiBold";
+}
+
 #pane {
-    -fx-background-color: #00cc99;
+    -fx-background-color: #669999;
 }
 
 .label {
@@ -8,7 +12,11 @@
 }
 
 #recordTable .column-header .label {
-    -fx-text-fill: #805500;
+    -fx-text-fill: white;
+}
+
+#recordTable .column-header {
+    -fx-background-color: #424141;
 }
 
 #recordTable .scroll-bar:horizontal .increment-arrow,
@@ -19,39 +27,44 @@
 }
 
 #totalAmountText {
+    -fx-font-family: "KG Traditional Fractions";
     -fx-fill: white;
     -fx-font-weight: bold;
+    -fx-font-size: 50;
 }
 
 .button {
-    -fx-border-color: white;
-    -fx-border-width: 1;
+    -fx-border-color: #e0e0d1;
+    -fx-border-width: 1.5;
     -fx-background-radius: 0;
-    -fx-background-color: #33cc59;
+    -fx-background-color: #c2c2a3;
     -fx-text-fill: white;
+    -fx-font-family: "Roundo SemiBold";
+    -fx-font-size: 13;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
 }
 
 .button:hover {
-    -fx-background-color: #155124;
+    -fx-background-color: #5c5c3d;
 }
 
 .button:pressed, .button:default:hover:pressed {
-    -fx-background-color: #001a00;
+    -fx-background-color: #424141;
 }
 
 .combo-box-base {
-    -fx-background-color: #33cc59;
+    -fx-background-color: #c2c2a3;
     -fx-border-color: white;
     -fx-border-width: 1 1 1 1;
 }
 
 .combo-box-popup .list-view .list-cell:hover {
-    -fx-background-color: #155124;
+    -fx-background-color: #5c5c3d;
 }
 
 #filterBox .list-cell {
-    -fx-background: #33cc59;
+    -fx-background: #c2c2a3;
+    -fx-font-family: "Roundo SemiBold";
     -fx-text-fill: white;
 }
 
@@ -60,6 +73,6 @@
 }
 
 .radio-button .dot {
-    -fx-mark-color: #805500;
+    -fx-mark-color: #424141;
     -fx-padding: 3px;
 }
