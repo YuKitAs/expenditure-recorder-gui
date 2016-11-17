@@ -1,18 +1,15 @@
 package expenditure.recorder.gui.view;
 
 import expenditure.recorder.gui.model.Record;
-import expenditure.recorder.gui.model.TimeRange;
+import expenditure.recorder.gui.viewmodel.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -75,24 +72,19 @@ public class Controller implements Initializable {
     @FXML
     private RadioButton filterPickerRadioButton;
 
-    private final ToggleGroup radioButtonGroup = new ToggleGroup();
-
     private ObservableList<Record> records = FXCollections.observableArrayList();
 
-    private ObservableList<Record> filteredRecords = FXCollections.observableArrayList();
-
-    private TimeRange currentTimeRange = TimeRange.ALL;
-
-    private final ObservableList<String> timeRanges = FXCollections.observableArrayList(
-            "All", "Today", "Last 7 Days", "Last 30 Days");
-
-    private int totalAmount;
-
-    private LocalDate fromDate = null;
-
-    private LocalDate toDate = null;
-
     // private final RecordsPersistence recordsPersistence;
+
+    private ButtonViewModel buttonViewModel;
+
+    private ComboBoxViewModel comboBoxViewModel;
+
+    private DatePickerViewModel datePickerViewModel;
+
+    private TableViewViewModel tableViewViewModel;
+
+    private RecordUpdater recordUpdater;
 
     public Controller() {
         // recordsPersistence = null;
@@ -100,287 +92,32 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initDatePicker();
-        initFilterBox();
-        initRadioButton();
-        deleteButton.setDisable(true);
+        recordUpdater = new RecordUpdater(recordTable, records, totalAmountText);
 
-        setAddButtonOnAction();
-        setClearButtonOnAction();
-        setDeleteButtonOnAction();
-        setFilterBoxOnAction();
-        setRadioButtonOnAction();
-        setFromDatePickerOnAction();
-        setToDatePickerOnAction();
-        setRecordTableOnAction();
-    }
+        datePickerViewModel = new DatePickerViewModel(datePicker, fromDatePicker, toDatePicker, filterPickerRadioButton, recordUpdater);
 
-    private void filterDateInDatePicker(DatePicker filteredDatePicker, LocalDate dateLimit, boolean dateAfterAllowed) {
-        if (dateLimit == null) {
-            return;
-        }
+        comboBoxViewModel = new ComboBoxViewModel(filterBox, filterBoxRadioButton, recordUpdater);
 
-        filteredDatePicker.setDayCellFactory(dp -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                if (item.isAfter(dateLimit) && !dateAfterAllowed) {
-                    this.setDisable(true);
-                } else if (item.isBefore(dateLimit) && dateAfterAllowed) {
-                    this.setDisable(true);
-                }
-            }
-        });
-    }
+        buttonViewModel = new ButtonViewModel(addButton, clearButton, deleteButton, filterBoxRadioButton, filterPickerRadioButton,
+                recordTable, records, itemField, amountField, datePicker, itemErrorText, amountErrorText, dateErrorText, filterBox,
+                recordUpdater);
 
-    private void initDatePicker() {
-        filterDateInDatePicker(datePicker, LocalDate.now(), false);
-    }
+        tableViewViewModel = new TableViewViewModel(recordTable, deleteButton);
 
-    private void initFilterBox() {
-        filterBox.setItems(timeRanges);
-        filterBox.getSelectionModel().selectFirst();
-    }
+        datePickerViewModel.initDatePicker();
+        datePickerViewModel.setFromDatePickerOnAction();
+        datePickerViewModel.setToDatePickerOnAction();
 
-    private void initRadioButton() {
-        filterBoxRadioButton.setToggleGroup(radioButtonGroup);
-        filterPickerRadioButton.setToggleGroup(radioButtonGroup);
-    }
+        comboBoxViewModel.initFilterBox();
+        comboBoxViewModel.setFilterBoxOnAction();
 
-    private void setAddButtonOnAction() {
-        addButton.setOnAction(event -> {
-            itemErrorText.setText("");
-            amountErrorText.setText("");
-            dateErrorText.setText("");
+        buttonViewModel.initRadioButton();
+        buttonViewModel.setAddButtonOnAction(itemCol, amountCol, dateCol);
+        buttonViewModel.setClearButtonOnAction();
+        buttonViewModel.setDeleteButtonOnAction();
+        buttonViewModel.setRadioButtonOnAction();
 
-            try {
-                if (itemField.getText().isEmpty()) {
-                    itemErrorText.setText("Please enter an item.");
-                    return;
-                }
-
-                if (!amountField.getText().matches("[1-9]+[0-9]*")) {
-                    amountErrorText.setText("Please enter a valid integer.");
-                    return;
-                }
-
-                if (datePicker.getValue() == null) {
-                    dateErrorText.setText("Please choose a date.");
-                    return;
-                }
-
-                records.add(new Record(itemField.getText(), "€ " + amountField.getText(), datePicker
-                        .getValue().toString()));
-
-                itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
-                amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
-                dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
-
-            } catch (NullPointerException | NumberFormatException e) {
-            }
-
-            updateRecords();
-            // persistentRecords();
-        });
-    }
-
-    private void setClearButtonOnAction() {
-        clearButton.setOnAction(event -> {
-            itemField.clear();
-            amountField.clear();
-            datePicker.getEditor().clear();
-
-            itemErrorText.setText("");
-            amountErrorText.setText("");
-            dateErrorText.setText("");
-        });
-    }
-
-    private void setDeleteButtonOnAction() {
-        deleteButton.setOnAction(event -> {
-
-            records.remove(recordTable.getSelectionModel().getSelectedItem());
-
-            updateRecords();
-
-            updateTotalAmount(records);
-
-            deleteButton.setDisable(true);
-
-            // persistentRecords();
-        });
-    }
-
-    private void setRecordTableOnAction() {
-        recordTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                deleteButton.setDisable(false);
-            }
-        });
-    }
-
-    private void setRadioButtonOnAction() {
-        filterBoxRadioButton.setOnAction(event -> {
-            setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
-
-            updateRecords();
-        });
-
-        filterPickerRadioButton.setOnAction(event -> {
-            setCurrentTimeRange("Custom");
-
-            updateRecords();
-        });
-    }
-
-    private void setFilterBoxOnAction() {
-        filterBox.setOnAction(event -> {
-            if (filterBoxRadioButton.isSelected()) {
-                setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
-
-                updateRecords();
-            }
-        });
-    }
-
-    private void setFromDatePickerOnAction() {
-        fromDatePicker.setOnAction(event -> {
-            fromDate = fromDatePicker.getValue();
-
-            if (filterPickerRadioButton.isSelected()) {
-                updateRecords();
-            }
-        });
-    }
-
-    private void setToDatePickerOnAction() {
-        toDatePicker.setOnAction(event -> {
-            toDate = toDatePicker.getValue();
-
-            if (filterPickerRadioButton.isSelected()) {
-                updateRecords();
-            }
-        });
-    }
-
-    private void setCurrentTimeRange(String timeRange) {
-        switch (timeRange) {
-            case "All":
-                currentTimeRange = TimeRange.ALL;
-                break;
-            case "Today":
-                currentTimeRange = TimeRange.TODAY;
-                break;
-            case "Last 7 Days":
-                currentTimeRange = TimeRange.LAST_7_DAYS;
-                break;
-            case "Last 30 Days":
-                currentTimeRange = TimeRange.LAST_30_DAYS;
-                break;
-            case "Custom":
-                currentTimeRange = TimeRange.CUSTOM;
-                break;
-        }
-    }
-
-    private void updateRecords() {
-        filteredRecords.clear();
-
-        if (currentTimeRange.equals(TimeRange.ALL)) {
-            recordTable.setItems(records);
-            updateTotalAmount(records);
-        } else if (currentTimeRange.equals(TimeRange.TODAY)) {
-            ShowRecordsOfToday();
-        } else if (currentTimeRange.equals(TimeRange.LAST_7_DAYS)) {
-            ShowRecordsInLast7Days();
-        } else if (currentTimeRange.equals(TimeRange.LAST_30_DAYS)) {
-            ShowRecordsInLast30Days();
-        } else if (currentTimeRange.equals(TimeRange.CUSTOM)) {
-            showRecordsInCustomTimeRange();
-        }
-    }
-
-    private void ShowRecordsOfToday() {
-        records.forEach(record -> {
-            LocalDate date = LocalDate.parse(record.getDate());
-
-            if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
-                filteredRecords.add(record);
-            }
-        });
-
-        recordTable.setItems(filteredRecords);
-
-        updateTotalAmount(filteredRecords);
-    }
-
-    private void ShowRecordsInLast7Days() {
-        records.forEach(record -> {
-            LocalDate date = LocalDate.parse(record.getDate());
-
-            if (date.isAfter(LocalDate.now().minusWeeks(1))) {
-                filteredRecords.add(record);
-            }
-        });
-
-        recordTable.setItems(filteredRecords);
-
-        updateTotalAmount(filteredRecords);
-    }
-
-    private void ShowRecordsInLast30Days() {
-        records.forEach(record -> {
-            LocalDate date = LocalDate.parse(record.getDate());
-
-            if (date.isAfter(LocalDate.now().minusMonths(1))) {
-                filteredRecords.add(record);
-            }
-        });
-
-        recordTable.setItems(filteredRecords);
-
-        updateTotalAmount(filteredRecords);
-    }
-
-    private void showRecordsInCustomTimeRange() {
-        if (fromDate == null && toDate == null) {
-            recordTable.setItems(records);
-            updateTotalAmount(records);
-
-            return;
-        }
-
-        filterDateInDatePicker(fromDatePicker, toDate, false);
-        filterDateInDatePicker(toDatePicker, fromDate, true);
-
-        records.forEach(record -> {
-            LocalDate date = LocalDate.parse(record.getDate());
-
-            if (fromDate == null) {
-                if (date.isBefore(toDate) || date.isEqual(toDate)) {
-                    filteredRecords.add(record);
-                }
-            } else if (toDate == null) {
-                if (date.isAfter(fromDate) || date.isEqual(fromDate)) {
-                    filteredRecords.add(record);
-                }
-            } else {
-                if ((date.isAfter(fromDate) || date.isEqual(fromDate)) && (date.isBefore(toDate) || date.isEqual(toDate))) {
-                    filteredRecords.add(record);
-                }
-            }
-        });
-
-        recordTable.setItems(filteredRecords);
-
-        updateTotalAmount(filteredRecords);
-    }
-
-    private void updateTotalAmount(ObservableList<Record> records) {
-        totalAmount = 0;
-
-        records.forEach(record -> totalAmount += Integer.parseInt(record.getAmount().substring(2)));
-
-        totalAmountText.setText("€ " + Integer.toString(totalAmount));
+        tableViewViewModel.setRecordTableOnAction();
     }
 
     private void persistentRecords() {
