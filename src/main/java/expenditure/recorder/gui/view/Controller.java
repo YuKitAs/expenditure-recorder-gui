@@ -12,6 +12,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -106,15 +107,21 @@ public class Controller implements Initializable {
 
         recordTable.itemsProperty().bind(testViewModel.recordTableProperty());
 
+        initDatePicker();
+
         addButton.setOnAction(event -> {
             itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
             amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
             dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
 
-            testViewModel.updateRecords();
+            testViewModel.addRecord();
         });
 
         clearButton.setOnAction(event -> testViewModel.clearInput());
+
+        deleteButton.setOnAction(event -> testViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
+        //deleteButton.disableProperty().bind(testViewModel.deleteButtonDisabledProperty());
+
 
         /*
         recordUpdater = new RecordUpdater(recordTable, records, totalAmountText);
@@ -144,6 +151,27 @@ public class Controller implements Initializable {
 
         tableViewViewModel.setRecordTableOnAction();
         */
+    }
+
+    private void initDatePicker() {
+        filterDateInDatePicker(datePicker, LocalDate.now(), false);
+    }
+
+    private void filterDateInDatePicker(DatePicker filteredDatePicker, LocalDate dateLimit, boolean dateAfterAllowed) {
+        if (dateLimit == null) {
+            return;
+        }
+
+        filteredDatePicker.setDayCellFactory(dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate item, boolean empty) {
+                if (item.isAfter(dateLimit) && !dateAfterAllowed) {
+                    this.setDisable(true);
+                } else if (item.isBefore(dateLimit) && dateAfterAllowed) {
+                    this.setDisable(true);
+                }
+            }
+        });
     }
 
     private void persistentRecords() {

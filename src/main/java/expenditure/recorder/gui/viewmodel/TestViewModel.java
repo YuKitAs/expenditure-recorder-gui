@@ -27,6 +27,8 @@ public class TestViewModel {
     private ObjectProperty<ObservableList<Record>> recordTable = new SimpleObjectProperty<>();
     private ObservableList<Record> records = FXCollections.observableArrayList();
 
+    // private BooleanProperty deleteButtonDisabled = new SimpleBooleanProperty();
+
     private StringProperty totalAmountText = new SimpleStringProperty();
 
 
@@ -34,11 +36,15 @@ public class TestViewModel {
 
     }
 
-    public void updateRecords() {
+    public void addRecord() {
         if (checkInput()) {
             records.add(new Record(itemText.get(), amountText.get(), date.get().toString()));
             recordTable.setValue(records);
         }
+    }
+
+    public void deleteRecord(Record record) {
+        recordTable.getValue().remove(record);
     }
 
     private Boolean checkInput() {
@@ -145,4 +151,12 @@ public class TestViewModel {
     public ObjectProperty<ObservableList<Record>> recordTableProperty() {
         return recordTable;
     }
+
+    /*public boolean isDeleteButtonDisabled() {
+        return deleteButtonDisabled.get();
+    }
+
+    public BooleanProperty deleteButtonDisabledProperty() {
+        return deleteButtonDisabled;
+    }*/
 }
