@@ -1,7 +1,9 @@
 package expenditure.recorder.gui.view;
 
 import expenditure.recorder.gui.model.Record;
+import expenditure.recorder.gui.model.TimeRange;
 import expenditure.recorder.gui.viewmodel.*;
+import expenditure.recorder.gui.viewmodel.helper.CurrentTimeRangeUpdater;
 import expenditure.recorder.gui.viewmodel.helper.RecordUpdater;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -75,9 +77,12 @@ public class Controller implements Initializable {
     @FXML
     private RadioButton filterPickerRadioButton;
 
-    private ObservableList<Record> records = FXCollections.observableArrayList();
+    private final ToggleGroup radioButtonGroup = new ToggleGroup();
 
     // private final RecordsPersistence recordsPersistence;
+
+    private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Today", "Last 7 Days",
+            "Last 30 Days");
 
     private ButtonViewModel buttonViewModel;
 
@@ -85,11 +90,9 @@ public class Controller implements Initializable {
 
     private DatePickerViewModel datePickerViewModel;
 
-    private TableViewViewModel tableViewViewModel;
+    private MyViewModel myViewModel = new MyViewModel();
 
-    private RecordUpdater recordUpdater;
-
-    private TestViewModel testViewModel = new TestViewModel();
+    private CurrentTimeRangeUpdater currentTimeRangeUpdater = CurrentTimeRangeUpdater.getInstance();
 
     public Controller() {
         // recordsPersistence = null;
@@ -97,15 +100,35 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        itemField.textProperty().bindBidirectional(testViewModel.itemTextProperty());
-        amountField.textProperty().bindBidirectional(testViewModel.amountTextProperty());
-        datePicker.valueProperty().bindBidirectional(testViewModel.dateProperty());
+        itemField.textProperty().bindBidirectional(myViewModel.itemTextProperty());
+        amountField.textProperty().bindBidirectional(myViewModel.amountTextProperty());
+        datePicker.valueProperty().bindBidirectional(myViewModel.dateProperty());
 
-        itemErrorText.textProperty().bind(testViewModel.itemErrorTextProperty());
-        amountErrorText.textProperty().bind(testViewModel.amountErrorTextProperty());
-        dateErrorText.textProperty().bind(testViewModel.dateErrorTextProperty());
+        itemErrorText.textProperty().bind(myViewModel.itemErrorTextProperty());
+        amountErrorText.textProperty().bind(myViewModel.amountErrorTextProperty());
+        dateErrorText.textProperty().bind(myViewModel.dateErrorTextProperty());
 
-        recordTable.itemsProperty().bind(testViewModel.recordTableProperty());
+        recordTable.itemsProperty().bind(myViewModel.recordTableProperty());
+
+        totalAmountText.textProperty().bindBidirectional(myViewModel.totalAmountTextProperty());
+
+        initRadioButton();
+        filterBoxRadioButton.setOnAction(event -> {
+            myViewModel.filterBoxRadioButtonOnAction();
+        });
+        filterPickerRadioButton.setOnAction(event -> {
+            myViewModel.filterPickerRadioButtonOnAction();
+        });
+
+        initFilterBox();
+        filterBox.selectionModelProperty().bindBidirectional(myViewModel.filterBoxProperty());
+        filterBox.setOnAction(event -> {
+            if (filterBoxRadioButton.isSelected()) {
+                currentTimeRangeUpdater.setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
+
+                myViewModel.updateRecords();
+            }
+        });
 
         initDatePicker();
 
@@ -114,14 +137,32 @@ public class Controller implements Initializable {
             amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
             dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
 
-            testViewModel.addRecord();
+            myViewModel.addRecord();
         });
 
-        clearButton.setOnAction(event -> testViewModel.clearInput());
+        clearButton.setOnAction(event -> myViewModel.clearInput());
 
-        deleteButton.setOnAction(event -> testViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
-        //deleteButton.disableProperty().bind(testViewModel.deleteButtonDisabledProperty());
+        deleteButton.setOnAction(event -> myViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
+        //deleteButton.disableProperty().bind(myViewModel.deleteButtonDisabledProperty());
 
+        fromDatePicker.setOnAction(event -> {
+            currentTimeRangeUpdater.setFromDate(fromDatePicker.getValue());
+            currentTimeRangeUpdater.setCurrentTimeRange("Custom");
+
+            if (filterPickerRadioButton.isSelected()) {
+
+                myViewModel.updateRecords();
+            }
+        });
+
+        toDatePicker.setOnAction(event -> {
+            currentTimeRangeUpdater.setToDate(toDatePicker.getValue());
+            currentTimeRangeUpdater.setCurrentTimeRange("Custom");
+
+            if (filterPickerRadioButton.isSelected()) {
+                myViewModel.updateRecords();
+            }
+        });
 
         /*
         recordUpdater = new RecordUpdater(recordTable, records, totalAmountText);
@@ -148,9 +189,12 @@ public class Controller implements Initializable {
         buttonViewModel.setClearButtonOnAction();
         buttonViewModel.setDeleteButtonOnAction();
         buttonViewModel.setRadioButtonOnAction();
-
-        tableViewViewModel.setRecordTableOnAction();
         */
+    }
+
+    private void initFilterBox() {
+        filterBox.setItems(timeRanges);
+        filterBox.getSelectionModel().selectFirst();
     }
 
     private void initDatePicker() {
@@ -174,7 +218,12 @@ public class Controller implements Initializable {
         });
     }
 
-    private void persistentRecords() {
+    private void initRadioButton() {
+        filterBoxRadioButton.setToggleGroup(radioButtonGroup);
+        filterPickerRadioButton.setToggleGroup(radioButtonGroup);
+    }
+
+    /*private void persistentRecords() {
         List<Record> plainRecordList = convertToPlainList(records);
 
         // recordsPersistence.persistent(plainRecordList);
@@ -186,5 +235,5 @@ public class Controller implements Initializable {
         plainRecordList.addAll(records);
 
         return plainRecordList;
-    }
+    }*/
 }
