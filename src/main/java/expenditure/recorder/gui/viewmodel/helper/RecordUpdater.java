@@ -1,10 +1,9 @@
-package expenditure.recorder.gui.viewmodel;
+package expenditure.recorder.gui.viewmodel.helper;
 
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.model.TimeRange;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 

@@ -2,11 +2,13 @@ package expenditure.recorder.gui.view;
 
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.viewmodel.*;
+import expenditure.recorder.gui.viewmodel.helper.RecordUpdater;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -86,12 +88,35 @@ public class Controller implements Initializable {
 
     private RecordUpdater recordUpdater;
 
+    private TestViewModel testViewModel = new TestViewModel();
+
     public Controller() {
         // recordsPersistence = null;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        itemField.textProperty().bindBidirectional(testViewModel.itemTextProperty());
+        amountField.textProperty().bindBidirectional(testViewModel.amountTextProperty());
+        datePicker.valueProperty().bindBidirectional(testViewModel.dateProperty());
+
+        itemErrorText.textProperty().bind(testViewModel.itemErrorTextProperty());
+        amountErrorText.textProperty().bind(testViewModel.amountErrorTextProperty());
+        dateErrorText.textProperty().bind(testViewModel.dateErrorTextProperty());
+
+        recordTable.itemsProperty().bind(testViewModel.recordTableProperty());
+
+        addButton.setOnAction(event -> {
+            itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
+            amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
+            dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
+
+            testViewModel.updateRecords();
+        });
+
+        clearButton.setOnAction(event -> testViewModel.clearInput());
+
+        /*
         recordUpdater = new RecordUpdater(recordTable, records, totalAmountText);
 
         datePickerViewModel = new DatePickerViewModel(datePicker, fromDatePicker, toDatePicker, filterPickerRadioButton, recordUpdater);
@@ -118,6 +143,7 @@ public class Controller implements Initializable {
         buttonViewModel.setRadioButtonOnAction();
 
         tableViewViewModel.setRecordTableOnAction();
+        */
     }
 
     private void persistentRecords() {

@@ -1,4 +1,4 @@
-package expenditure.recorder.gui.viewmodel;
+package expenditure.recorder.gui.viewmodel.helper;
 
 import expenditure.recorder.gui.model.TimeRange;
 
@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 public class CurrentTimeRangeUpdater {
     private static CurrentTimeRangeUpdater instance = null;
+
     private TimeRange currentTimeRange = TimeRange.ALL;
     private LocalDate fromDate = null;
     private LocalDate toDate = null;
@@ -41,6 +42,10 @@ public class CurrentTimeRangeUpdater {
         }
     }
 
+    public TimeRange getCurrentTimeRange() {
+        return currentTimeRange;
+    }
+
     public LocalDate getFromDate() {
         return fromDate;
     }
@@ -55,9 +60,5 @@ public class CurrentTimeRangeUpdater {
 
     public void setToDate(LocalDate toDate) {
         this.toDate = toDate;
-    }
-
-    public TimeRange getCurrentTimeRange() {
-        return currentTimeRange;
     }
 }

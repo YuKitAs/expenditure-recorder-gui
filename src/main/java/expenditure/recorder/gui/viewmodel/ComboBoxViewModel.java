@@ -1,5 +1,7 @@
 package expenditure.recorder.gui.viewmodel;
 
+import expenditure.recorder.gui.viewmodel.helper.CurrentTimeRangeUpdater;
+import expenditure.recorder.gui.viewmodel.helper.RecordUpdater;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ComboBox;
