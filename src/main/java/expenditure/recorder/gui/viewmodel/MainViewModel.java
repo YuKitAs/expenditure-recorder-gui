@@ -1,26 +1,19 @@
 package expenditure.recorder.gui.viewmodel;
 
-import com.sun.glass.ui.MenuItem;
-import com.sun.xml.internal.bind.v2.runtime.property.ValueProperty;
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.model.TimeRange;
-import expenditure.recorder.gui.viewmodel.helper.CurrentTimeRangeUpdater;
-import expenditure.recorder.gui.viewmodel.helper.RecordUpdater;
+import expenditure.recorder.gui.viewmodel.helper.CurrentTimeRangeManager;
 import javafx.beans.property.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MyViewModel {
+public class MainViewModel {
     private StringProperty itemText = new SimpleStringProperty();
     private StringProperty amountText = new SimpleStringProperty();
     private ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
@@ -33,18 +26,22 @@ public class MyViewModel {
     private ObservableList<Record> records = FXCollections.observableArrayList();
     private ObservableList<Record> filteredRecords = FXCollections.observableArrayList();
 
-    // private BooleanProperty deleteButtonDisabled = new SimpleBooleanProperty();
-
     private ObjectProperty<SingleSelectionModel<String>> filterBox = new SimpleObjectProperty<>();
     private List<String> timeRanges = Arrays.asList("All", "Today", "Last 7 Days", "Last 30 Days");
+
+    private ObjectProperty<LocalDate> fromDate = new SimpleObjectProperty<>();
+    private ObjectProperty<LocalDate> toDate = new SimpleObjectProperty<>();
 
     private StringProperty totalAmountText = new SimpleStringProperty();
     private int totalAmount;
 
-    private CurrentTimeRangeUpdater currentTimeRangeUpdater = CurrentTimeRangeUpdater.getInstance();
+    private BooleanProperty filterBoxRadioButtonSelected = new SimpleBooleanProperty();
+    private BooleanProperty filterPickerRadioButtonSelected = new SimpleBooleanProperty();
+
+    private CurrentTimeRangeManager currentTimeRangeManager = CurrentTimeRangeManager.getInstance();
 
 
-    public MyViewModel() {
+    public MainViewModel() {
         filterBox.set(new SingleSelectionModel<String>() {
             @Override
             protected String getModelItem(int index) {
@@ -56,29 +53,71 @@ public class MyViewModel {
                 return 4;
             }
         });
-    }
 
-    public void filterPickerRadioButtonOnAction() {
-        currentTimeRangeUpdater.setCurrentTimeRange(filterBox.get().getSelectedItem());
-        updateRecords();
-    }
-
-    public void filterBoxRadioButtonOnAction() {
-        currentTimeRangeUpdater.setCurrentTimeRange("Custom");
-        updateRecords();
+        totalAmountText.set("€ 0");
     }
 
     public void addRecord() {
         if (checkInput()) {
             records.add(new Record(itemText.get(), amountText.get(), date.get().toString()));
             recordTable.setValue(records);
+
+            updateTotalAmount(records);
         }
     }
 
-    public void updateRecords() {
+    public void clearInput() {
+        clearErrorText();
+
+        itemText.set(null);
+        amountText.set(null);
+        date.set(null);
+    }
+
+    public void deleteRecord(Record record) {
+        recordTable.getValue().remove(record);
+        updateTotalAmount(records);
+    }
+
+    public void filterBoxOnAction() {
+        if (filterBoxRadioButtonSelected.get()) {
+            currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
+            filterRecords();
+        }
+    }
+
+    public void filterBoxRadioButtonOnAction() {
+        currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
+        filterRecords();
+    }
+
+    public void filterPickerRadioButtonOnAction() {
+        currentTimeRangeManager.setCurrentTimeRange("Custom");
+        filterRecords();
+    }
+
+    public void fromDatePickerOnAction() {
+        currentTimeRangeManager.setFromDate(fromDate.getValue());
+        currentTimeRangeManager.setCurrentTimeRange("Custom");
+
+        if (filterPickerRadioButtonSelected.get()) {
+            filterRecords();
+        }
+    }
+
+    public void toDatePickerOnAction() {
+        currentTimeRangeManager.setToDate(toDate.getValue());
+        currentTimeRangeManager.setCurrentTimeRange("Custom");
+
+        if (filterPickerRadioButtonSelected.get()) {
+            filterRecords();
+        }
+    }
+
+    public void filterRecords() {
         filteredRecords.clear();
 
-        TimeRange currentTimeRange = currentTimeRangeUpdater.getCurrentTimeRange();
+        TimeRange currentTimeRange = currentTimeRangeManager.getCurrentTimeRange();
 
         if (currentTimeRange.equals(TimeRange.ALL)) {
             recordTable.setValue(records);
@@ -137,8 +176,8 @@ public class MyViewModel {
     }
 
     private void showRecordsInCustomTimeRange() {
-        LocalDate fromDate = currentTimeRangeUpdater.getFromDate();
-        LocalDate toDate = currentTimeRangeUpdater.getToDate();
+        LocalDate fromDate = currentTimeRangeManager.getFromDate();
+        LocalDate toDate = currentTimeRangeManager.getToDate();
 
         if (fromDate == null && toDate == null) {
             recordTable.setValue(records);
@@ -172,14 +211,9 @@ public class MyViewModel {
 
     private void updateTotalAmount(ObservableList<Record> records) {
         totalAmount = 0;
-
-        records.forEach(record -> totalAmount += Integer.parseInt(record.getAmount().substring(2)));
+        records.forEach(record -> totalAmount += Integer.parseInt(record.getAmount()));
 
         totalAmountText.set("€ " + Integer.toString(totalAmount));
-    }
-
-    public void deleteRecord(Record record) {
-        recordTable.getValue().remove(record);
     }
 
     private Boolean checkInput() {
@@ -205,101 +239,61 @@ public class MyViewModel {
         return isCorrect;
     }
 
-    public void clearInput() {
-        clearErrorText();
-
-        itemText.set(null);
-        amountText.set(null);
-        date.set(null);
-    }
-
     private void clearErrorText() {
         itemErrorText.set("");
         amountErrorText.set("");
         dateErrorText.set("");
     }
 
-    public String getItemText() {
-        return itemText.get();
-    }
-
     public StringProperty itemTextProperty() {
         return itemText;
-    }
-
-    public String getAmountText() {
-        return amountText.get();
     }
 
     public StringProperty amountTextProperty() {
         return amountText;
     }
 
-    public String getItemErrorText() {
-        return itemErrorText.get();
-    }
-
     public StringProperty itemErrorTextProperty() {
         return itemErrorText;
-    }
-
-    public String getAmountErrorText() {
-        return amountErrorText.get();
     }
 
     public StringProperty amountErrorTextProperty() {
         return amountErrorText;
     }
 
-    public String getDateErrorText() {
-        return dateErrorText.get();
-    }
-
     public StringProperty dateErrorTextProperty() {
         return dateErrorText;
-    }
-
-    public LocalDate getDate() {
-        return date.get();
     }
 
     public ObjectProperty<LocalDate> dateProperty() {
         return date;
     }
 
-    public String getTotalAmountText() {
-        return totalAmountText.get();
-    }
-
     public StringProperty totalAmountTextProperty() {
         return totalAmountText;
-    }
-
-    public void setTotalAmountText(String totalAmountText) {
-        this.totalAmountText.set(totalAmountText);
-    }
-
-    public ObservableList getRecordTable() {
-        return recordTable.get();
     }
 
     public ObjectProperty<ObservableList<Record>> recordTableProperty() {
         return recordTable;
     }
 
-    /*public boolean isDeleteButtonDisabled() {
-        return deleteButtonDisabled.get();
-    }
-
-    public BooleanProperty deleteButtonDisabledProperty() {
-        return deleteButtonDisabled;
-    }*/
-
-    public SingleSelectionModel<String> getFilterBox() {
-        return filterBox.get();
-    }
-
     public ObjectProperty<SingleSelectionModel<String>> filterBoxProperty() {
         return filterBox;
+    }
+
+    public BooleanProperty filterBoxRadioButtonSelectedProperty() {
+        return filterBoxRadioButtonSelected;
+    }
+
+    public BooleanProperty filterPickerRadioButtonSelectedProperty() {
+        return filterPickerRadioButtonSelected;
+    }
+
+    public ObjectProperty<LocalDate> fromDateProperty() {
+        return fromDate;
+    }
+
+    public ObjectProperty<LocalDate> toDateProperty() {
+        return toDate;
     }
 }

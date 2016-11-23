@@ -1,10 +1,7 @@
 package expenditure.recorder.gui.view;
 
 import expenditure.recorder.gui.model.Record;
-import expenditure.recorder.gui.model.TimeRange;
 import expenditure.recorder.gui.viewmodel.*;
-import expenditure.recorder.gui.viewmodel.helper.CurrentTimeRangeUpdater;
-import expenditure.recorder.gui.viewmodel.helper.RecordUpdater;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -15,8 +12,6 @@ import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -79,20 +74,12 @@ public class Controller implements Initializable {
 
     private final ToggleGroup radioButtonGroup = new ToggleGroup();
 
-    // private final RecordsPersistence recordsPersistence;
-
     private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Today", "Last 7 Days",
             "Last 30 Days");
 
-    private ButtonViewModel buttonViewModel;
+    private MainViewModel mainViewModel = new MainViewModel();
 
-    private ComboBoxViewModel comboBoxViewModel;
-
-    private DatePickerViewModel datePickerViewModel;
-
-    private MyViewModel myViewModel = new MyViewModel();
-
-    private CurrentTimeRangeUpdater currentTimeRangeUpdater = CurrentTimeRangeUpdater.getInstance();
+    // private final RecordsPersistence recordsPersistence;
 
     public Controller() {
         // recordsPersistence = null;
@@ -100,96 +87,53 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        itemField.textProperty().bindBidirectional(myViewModel.itemTextProperty());
-        amountField.textProperty().bindBidirectional(myViewModel.amountTextProperty());
-        datePicker.valueProperty().bindBidirectional(myViewModel.dateProperty());
+        // Binding
+        itemField.textProperty().bindBidirectional(mainViewModel.itemTextProperty());
+        amountField.textProperty().bindBidirectional(mainViewModel.amountTextProperty());
+        datePicker.valueProperty().bindBidirectional(mainViewModel.dateProperty());
 
-        itemErrorText.textProperty().bind(myViewModel.itemErrorTextProperty());
-        amountErrorText.textProperty().bind(myViewModel.amountErrorTextProperty());
-        dateErrorText.textProperty().bind(myViewModel.dateErrorTextProperty());
+        itemErrorText.textProperty().bind(mainViewModel.itemErrorTextProperty());
+        amountErrorText.textProperty().bind(mainViewModel.amountErrorTextProperty());
+        dateErrorText.textProperty().bind(mainViewModel.dateErrorTextProperty());
 
-        recordTable.itemsProperty().bind(myViewModel.recordTableProperty());
+        recordTable.itemsProperty().bind(mainViewModel.recordTableProperty());
 
-        totalAmountText.textProperty().bindBidirectional(myViewModel.totalAmountTextProperty());
+        filterBox.selectionModelProperty().bindBidirectional(mainViewModel.filterBoxProperty());
 
+        filterBoxRadioButton.selectedProperty().bindBidirectional(mainViewModel.filterBoxRadioButtonSelectedProperty());
+        filterPickerRadioButton.selectedProperty().bindBidirectional(mainViewModel.filterPickerRadioButtonSelectedProperty());
+
+        fromDatePicker.valueProperty().bindBidirectional(mainViewModel.fromDateProperty());
+        toDatePicker.valueProperty().bindBidirectional(mainViewModel.toDateProperty());
+
+        totalAmountText.textProperty().bind(mainViewModel.totalAmountTextProperty());
+
+        // Init
         initRadioButton();
-        filterBoxRadioButton.setOnAction(event -> {
-            myViewModel.filterBoxRadioButtonOnAction();
-        });
-        filterPickerRadioButton.setOnAction(event -> {
-            myViewModel.filterPickerRadioButtonOnAction();
-        });
-
         initFilterBox();
-        filterBox.selectionModelProperty().bindBidirectional(myViewModel.filterBoxProperty());
-        filterBox.setOnAction(event -> {
-            if (filterBoxRadioButton.isSelected()) {
-                currentTimeRangeUpdater.setCurrentTimeRange(filterBox.getSelectionModel().getSelectedItem());
-
-                myViewModel.updateRecords();
-            }
-        });
-
         initDatePicker();
 
+        // setOnAction
         addButton.setOnAction(event -> {
             itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
             amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
             dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
 
-            myViewModel.addRecord();
+            mainViewModel.addRecord();
         });
 
-        clearButton.setOnAction(event -> myViewModel.clearInput());
+        clearButton.setOnAction(event -> mainViewModel.clearInput());
 
-        deleteButton.setOnAction(event -> myViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
-        //deleteButton.disableProperty().bind(myViewModel.deleteButtonDisabledProperty());
+        deleteButton.setOnAction(event -> mainViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
+        //deleteButton.disableProperty().bind(mainViewModel.deleteButtonDisabledProperty());
 
-        fromDatePicker.setOnAction(event -> {
-            currentTimeRangeUpdater.setFromDate(fromDatePicker.getValue());
-            currentTimeRangeUpdater.setCurrentTimeRange("Custom");
+        filterBoxRadioButton.setOnAction(event -> mainViewModel.filterBoxRadioButtonOnAction());
+        filterPickerRadioButton.setOnAction(event -> mainViewModel.filterPickerRadioButtonOnAction());
 
-            if (filterPickerRadioButton.isSelected()) {
+        filterBox.setOnAction(event -> mainViewModel.filterBoxOnAction());
 
-                myViewModel.updateRecords();
-            }
-        });
-
-        toDatePicker.setOnAction(event -> {
-            currentTimeRangeUpdater.setToDate(toDatePicker.getValue());
-            currentTimeRangeUpdater.setCurrentTimeRange("Custom");
-
-            if (filterPickerRadioButton.isSelected()) {
-                myViewModel.updateRecords();
-            }
-        });
-
-        /*
-        recordUpdater = new RecordUpdater(recordTable, records, totalAmountText);
-
-        datePickerViewModel = new DatePickerViewModel(datePicker, fromDatePicker, toDatePicker, filterPickerRadioButton, recordUpdater);
-
-        comboBoxViewModel = new ComboBoxViewModel(filterBox, filterBoxRadioButton, recordUpdater);
-
-        buttonViewModel = new ButtonViewModel(addButton, clearButton, deleteButton, filterBoxRadioButton, filterPickerRadioButton,
-                recordTable, records, itemField, amountField, datePicker, itemErrorText, amountErrorText, dateErrorText, filterBox,
-                recordUpdater);
-
-        tableViewViewModel = new TableViewViewModel(recordTable, deleteButton);
-
-        datePickerViewModel.initDatePicker();
-        datePickerViewModel.setFromDatePickerOnAction();
-        datePickerViewModel.setToDatePickerOnAction();
-
-        comboBoxViewModel.initFilterBox();
-        comboBoxViewModel.setFilterBoxOnAction();
-
-        buttonViewModel.initRadioButton();
-        buttonViewModel.setAddButtonOnAction(itemCol, amountCol, dateCol);
-        buttonViewModel.setClearButtonOnAction();
-        buttonViewModel.setDeleteButtonOnAction();
-        buttonViewModel.setRadioButtonOnAction();
-        */
+        fromDatePicker.setOnAction(event -> mainViewModel.fromDatePickerOnAction());
+        toDatePicker.setOnAction(event -> mainViewModel.toDatePickerOnAction());
     }
 
     private void initFilterBox() {
@@ -199,6 +143,8 @@ public class Controller implements Initializable {
 
     private void initDatePicker() {
         filterDateInDatePicker(datePicker, LocalDate.now(), false);
+        filterDateInDatePicker(fromDatePicker, toDatePicker.getValue(), false);
+        filterDateInDatePicker(toDatePicker, fromDatePicker.getValue(), true);
     }
 
     private void filterDateInDatePicker(DatePicker filteredDatePicker, LocalDate dateLimit, boolean dateAfterAllowed) {

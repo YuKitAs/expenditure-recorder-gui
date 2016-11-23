@@ -4,19 +4,19 @@ import expenditure.recorder.gui.model.TimeRange;
 
 import java.time.LocalDate;
 
-public class CurrentTimeRangeUpdater {
-    private static CurrentTimeRangeUpdater instance = null;
+public class CurrentTimeRangeManager {
+    private static CurrentTimeRangeManager instance = null;
 
     private TimeRange currentTimeRange = TimeRange.ALL;
     private LocalDate fromDate = null;
     private LocalDate toDate = null;
 
-    private CurrentTimeRangeUpdater() {
+    private CurrentTimeRangeManager() {
     }
 
-    public static CurrentTimeRangeUpdater getInstance() {
+    public static CurrentTimeRangeManager getInstance() {
         if (instance == null) {
-            instance = new CurrentTimeRangeUpdater();
+            instance = new CurrentTimeRangeManager();
         }
 
         return instance;
