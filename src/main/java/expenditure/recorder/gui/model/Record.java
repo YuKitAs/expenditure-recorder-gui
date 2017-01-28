@@ -1,6 +1,5 @@
 package expenditure.recorder.gui.model;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Record {
@@ -19,23 +18,11 @@ public class Record {
         return item.get();
     }
 
-    public void setItem(String item) {
-        this.item.set(item);
-    }
-
     public String getAmount() {
         return amount.get();
     }
 
-    public void setAmount(String amount) {
-        this.amount.set(amount);
-    }
-
     public String getDate() {
         return date.get();
-    }
-
-    public void setDate(String date) {
-        this.date.set(date);
     }
 }
