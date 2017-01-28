@@ -1,12 +1,14 @@
 package expenditure.recorder.gui.viewmodel;
 
+import com.google.api.client.http.HttpResponseException;
+import expenditure.recorder.gui.ExpenditureRecordFetcher;
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.model.TimeRange;
 import expenditure.recorder.gui.viewmodel.helper.CurrentTimeRangeManager;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.*;
+import javafx.scene.control.SingleSelectionModel;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -23,6 +25,7 @@ public class MainViewModel {
     private StringProperty dateErrorText = new SimpleStringProperty();
 
     private ObjectProperty<ObservableList<Record>> recordTable = new SimpleObjectProperty<>();
+
     private ObservableList<Record> records = FXCollections.observableArrayList();
     private ObservableList<Record> filteredRecords = FXCollections.observableArrayList();
 
@@ -40,6 +43,7 @@ public class MainViewModel {
 
     private CurrentTimeRangeManager currentTimeRangeManager = CurrentTimeRangeManager.getInstance();
 
+    private ExpenditureRecordFetcher fetcher = new ExpenditureRecordFetcher();
 
     public MainViewModel() {
         filterBox.set(new SingleSelectionModel<String>() {
@@ -55,13 +59,28 @@ public class MainViewModel {
         });
 
         totalAmountText.set("€ 0");
+
+        try {
+            try {
+                fetcher.run();
+            } catch (HttpResponseException e) {
+                System.err.println(e.getMessage());
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    public void showRecordsFromDatabase() {
+        records = fetcher.getRecords();
+        recordTable.setValue(records);
+        updateTotalAmount(records);
     }
 
     public void addRecord() {
         if (checkInput()) {
             records.add(new Record(itemText.get(), amountText.get(), date.get().toString()));
             recordTable.setValue(records);
-
             updateTotalAmount(records);
         }
     }
@@ -69,13 +88,15 @@ public class MainViewModel {
     public void clearInput() {
         clearErrorText();
 
-        itemText.set(null);
-        amountText.set(null);
-        date.set(null);
+        setItemTextProperty("");
+        setAmountTextProperty("");
+        setDateProperty(null);
     }
 
     public void deleteRecord(Record record) {
+        records.remove(record);
         recordTable.getValue().remove(record);
+
         updateTotalAmount(records);
     }
 
@@ -221,18 +242,18 @@ public class MainViewModel {
 
         Boolean isCorrect = true;
 
-        if (itemText.get() == null) {
-            itemErrorText.set("Please enter an item.");
+        if (itemText.get() == null || itemText.get().isEmpty()) {
+            setItemErrorTextProperty("Please enter an item.");
             isCorrect = false;
         }
 
         if (amountText.get() == null || !amountText.get().matches("[1-9]+[0-9]*")) {
-            amountErrorText.set("Please enter a valid integer.");
+            setAmountErrorTextProperty("Please enter a valid integer.");
             isCorrect = false;
         }
 
-        if (date.get() == null) {
-            dateErrorText.set("Please choose a date.");
+        if (date.getValue() == null) {
+            setDateErrorTextProperty("Please choose a date.");
             isCorrect = false;
         }
 
@@ -240,60 +261,90 @@ public class MainViewModel {
     }
 
     private void clearErrorText() {
-        itemErrorText.set("");
-        amountErrorText.set("");
-        dateErrorText.set("");
+        setItemErrorTextProperty("");
+        setAmountErrorTextProperty("");
+        setDateErrorTextProperty("");
     }
 
-    public StringProperty itemTextProperty() {
+    public StringProperty getItemTextProperty() {
         return itemText;
     }
 
-    public StringProperty amountTextProperty() {
+    public void setItemTextProperty(String item) {
+        itemText.set(item);
+    }
+
+    public StringProperty getAmountTextProperty() {
         return amountText;
     }
 
-    public StringProperty itemErrorTextProperty() {
-        return itemErrorText;
+    public void setAmountTextProperty(String amount) {
+        amountText.set(amount);
     }
 
-    public StringProperty amountErrorTextProperty() {
-        return amountErrorText;
-    }
-
-    public StringProperty dateErrorTextProperty() {
-        return dateErrorText;
-    }
-
-    public ObjectProperty<LocalDate> dateProperty() {
+    public ObjectProperty<LocalDate> getDateProperty() {
         return date;
     }
 
-    public StringProperty totalAmountTextProperty() {
+    public void setDateProperty(LocalDate date) {
+        this.date.set(date);
+    }
+
+    public StringProperty getItemErrorTextProperty() {
+        return itemErrorText;
+    }
+
+    public void setItemErrorTextProperty(String itemError) {
+        itemErrorText.set(itemError);
+    }
+
+    public StringProperty getAmountErrorTextProperty() {
+        return amountErrorText;
+    }
+
+    public void setAmountErrorTextProperty(String amountError) {
+        amountErrorText.set(amountError);
+    }
+
+    public StringProperty getDateErrorTextProperty() {
+        return dateErrorText;
+    }
+
+    public void setDateErrorTextProperty(String dateError) {
+        dateErrorText.set(dateError);
+    }
+
+    public StringProperty getTotalAmountTextProperty() {
         return totalAmountText;
     }
 
-    public ObjectProperty<ObservableList<Record>> recordTableProperty() {
+    public ObjectProperty<ObservableList<Record>> getRecordTableProperty() {
         return recordTable;
     }
 
-    public ObjectProperty<SingleSelectionModel<String>> filterBoxProperty() {
+    public ObjectProperty<SingleSelectionModel<String>> getFilterBoxProperty() {
         return filterBox;
     }
 
-    public BooleanProperty filterBoxRadioButtonSelectedProperty() {
+    public BooleanProperty getFilterBoxRadioButtonSelectedProperty() {
         return filterBoxRadioButtonSelected;
     }
 
-    public BooleanProperty filterPickerRadioButtonSelectedProperty() {
+    public BooleanProperty getFilterPickerRadioButtonSelectedProperty() {
         return filterPickerRadioButtonSelected;
     }
 
-    public ObjectProperty<LocalDate> fromDateProperty() {
+    public ObjectProperty<LocalDate> getFromDateProperty() {
         return fromDate;
     }
 
-    public ObjectProperty<LocalDate> toDateProperty() {
+    public ObjectProperty<LocalDate> getToDateProperty() {
         return toDate;
     }
+
+    public ObservableList<Record> getRecords() {
+        return records;
+    }
+
+
 }

@@ -1,3 +1,5 @@
+package expenditure.recorder.gui;
+
 import expenditure.recorder.gui.model.Record;
 
 import java.util.List;

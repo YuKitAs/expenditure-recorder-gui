@@ -14,7 +14,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class WindowController implements Initializable {
     @FXML
     private TextField itemField;
 
@@ -79,39 +79,43 @@ public class Controller implements Initializable {
 
     private MainViewModel mainViewModel = new MainViewModel();
 
-    // private final RecordsPersistence recordsPersistence;
+    // private final expenditure.recorder.gui.RecordsPersistence recordsPersistence;
 
-    public Controller() {
+    public WindowController() {
         // recordsPersistence = null;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Binding
-        itemField.textProperty().bindBidirectional(mainViewModel.itemTextProperty());
-        amountField.textProperty().bindBidirectional(mainViewModel.amountTextProperty());
-        datePicker.valueProperty().bindBidirectional(mainViewModel.dateProperty());
+        itemField.textProperty().bindBidirectional(mainViewModel.getItemTextProperty());
+        amountField.textProperty().bindBidirectional(mainViewModel.getAmountTextProperty());
+        datePicker.valueProperty().bindBidirectional(mainViewModel.getDateProperty());
 
-        itemErrorText.textProperty().bind(mainViewModel.itemErrorTextProperty());
-        amountErrorText.textProperty().bind(mainViewModel.amountErrorTextProperty());
-        dateErrorText.textProperty().bind(mainViewModel.dateErrorTextProperty());
+        itemErrorText.textProperty().bind(mainViewModel.getItemErrorTextProperty());
+        amountErrorText.textProperty().bind(mainViewModel.getAmountErrorTextProperty());
+        dateErrorText.textProperty().bind(mainViewModel.getDateErrorTextProperty());
 
-        recordTable.itemsProperty().bind(mainViewModel.recordTableProperty());
+        recordTable.itemsProperty().bind(mainViewModel.getRecordTableProperty());
 
-        filterBox.selectionModelProperty().bindBidirectional(mainViewModel.filterBoxProperty());
+        filterBox.selectionModelProperty().bindBidirectional(mainViewModel.getFilterBoxProperty());
 
-        filterBoxRadioButton.selectedProperty().bindBidirectional(mainViewModel.filterBoxRadioButtonSelectedProperty());
-        filterPickerRadioButton.selectedProperty().bindBidirectional(mainViewModel.filterPickerRadioButtonSelectedProperty());
+        filterBoxRadioButton.selectedProperty().bindBidirectional(mainViewModel.getFilterBoxRadioButtonSelectedProperty());
+        filterPickerRadioButton.selectedProperty().bindBidirectional(mainViewModel.getFilterPickerRadioButtonSelectedProperty());
 
-        fromDatePicker.valueProperty().bindBidirectional(mainViewModel.fromDateProperty());
-        toDatePicker.valueProperty().bindBidirectional(mainViewModel.toDateProperty());
+        fromDatePicker.valueProperty().bindBidirectional(mainViewModel.getFromDateProperty());
+        toDatePicker.valueProperty().bindBidirectional(mainViewModel.getToDateProperty());
 
-        totalAmountText.textProperty().bind(mainViewModel.totalAmountTextProperty());
+        totalAmountText.textProperty().bind(mainViewModel.getTotalAmountTextProperty());
 
         // Init
         initRadioButton();
         initFilterBox();
         initDatePicker();
+        itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
+        amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
+        dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
+        mainViewModel.showRecordsFromDatabase();
 
         // setOnAction
         addButton.setOnAction(event -> {

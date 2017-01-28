@@ -12,6 +12,7 @@
     <properties>
         <junit.version>4.12</junit.version>
         <assertj.version>3.5.2</assertj.version>
+        <google.http.client.version>1.22.0</google.http.client.version>
     </properties>
 
     <dependencies>
@@ -27,6 +28,16 @@
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client</artifactId>
+            <version>${google.http.client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.http-client</groupId>
+            <artifactId>google-http-client-jackson2</artifactId>
+            <version>1.22.0</version>
         </dependency>
     </dependencies>
 
