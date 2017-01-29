@@ -1,6 +1,5 @@
 package expenditure.recorder.gui.viewmodel;
 
-import expenditure.recorder.gui.model.Record;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,9 +8,6 @@ import java.time.Month;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Created by yuka on 28.01.17.
- */
 public class MainViewModelTest {
     MainViewModel viewModel = new MainViewModel();
 
@@ -20,16 +16,6 @@ public class MainViewModelTest {
         viewModel.setItemTextProperty("some item");
         viewModel.setAmountTextProperty("42");
         viewModel.setDateProperty(LocalDate.of(2017, Month.JANUARY, 1));
-    }
-
-    @Test
-    public void addRecordWithCorrectRecord() {
-        viewModel.addRecord();
-        Record record = viewModel.getRecords().get(0);
-
-        assertThat(record.getItem()).isEqualTo("some item");
-        assertThat(record.getAmount()).isEqualTo("42");
-        assertThat(record.getDate()).isEqualTo(LocalDate.of(2017, Month.JANUARY, 1).toString());
     }
 
     @Test

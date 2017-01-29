@@ -1,28 +1,27 @@
 package expenditure.recorder.gui.model;
 
-import javafx.beans.property.SimpleStringProperty;
+import com.google.api.client.util.DateTime;
+import com.google.api.client.util.Key;
+
+import java.time.Instant;
 
 public class Record {
-    private final SimpleStringProperty item;
-    private final SimpleStringProperty amount;
-    private final SimpleStringProperty date;
-
-    public Record(String item, String amount, String date) {
-
-        this.item = new SimpleStringProperty(item);
-        this.amount = new SimpleStringProperty(amount);
-        this.date = new SimpleStringProperty(date);
-    }
+    @Key
+    private String item;
+    @Key
+    private Integer amountInCent;
+    @Key
+    private DateTime date;
 
     public String getItem() {
-        return item.get();
+        return item;
     }
 
-    public String getAmount() {
-        return amount.get();
+    public Integer getAmountInCent() {
+        return amountInCent;
     }
 
-    public String getDate() {
-        return date.get();
+    public Instant getDate() {
+        return Instant.ofEpochMilli(date.getValue());
     }
 }

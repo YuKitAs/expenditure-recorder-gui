@@ -1,6 +1,4 @@
-package expenditure.recorder.gui.viewmodel.helper;
-
-import expenditure.recorder.gui.model.TimeRange;
+package expenditure.recorder.gui.viewmodel.filter;
 
 import java.time.LocalDate;
 

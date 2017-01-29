@@ -1,7 +1,8 @@
 package expenditure.recorder.gui.view;
 
 import expenditure.recorder.gui.model.Record;
-import expenditure.recorder.gui.viewmodel.*;
+import expenditure.recorder.gui.viewmodel.MainViewModel;
+import expenditure.recorder.gui.viewmodel.RecordTableItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,58 +18,40 @@ import java.util.ResourceBundle;
 public class WindowController implements Initializable {
     @FXML
     private TextField itemField;
-
     @FXML
     private TextField amountField;
-
     @FXML
     private DatePicker datePicker;
-
     @FXML
     private Button addButton;
-
     @FXML
     private Button clearButton;
-
     @FXML
     private Button deleteButton;
-
     @FXML
     private ComboBox<String> filterBox;
-
     @FXML
     private DatePicker fromDatePicker;
-
     @FXML
     private DatePicker toDatePicker;
-
     @FXML
-    private TableView<Record> recordTable;
-
+    private TableView<RecordTableItem> recordTable;
     @FXML
     private TableColumn itemCol;
-
     @FXML
     private TableColumn amountCol;
-
     @FXML
     private TableColumn dateCol;
-
     @FXML
     private Text totalAmountText;
-
     @FXML
     private Text itemErrorText;
-
     @FXML
     private Text amountErrorText;
-
     @FXML
     private Text dateErrorText;
-
     @FXML
     private RadioButton filterBoxRadioButton;
-
     @FXML
     private RadioButton filterPickerRadioButton;
 
@@ -109,35 +92,28 @@ public class WindowController implements Initializable {
         totalAmountText.textProperty().bind(mainViewModel.getTotalAmountTextProperty());
 
         // Init
-        initRadioButton();
-        initFilterBox();
-        initDatePicker();
         itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
         amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
         dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
+        initRadioButton();
+        initFilterBox();
+        initDatePicker();
+
         mainViewModel.showRecordsFromDatabase();
 
-        // setOnAction
-        addButton.setOnAction(event -> {
-            itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
-            amountCol.setCellValueFactory(new PropertyValueFactory<Record, String>("amount"));
-            dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
-
-            mainViewModel.addRecord();
-        });
-
+        // setOnActions
+        addButton.setOnAction(event -> mainViewModel.addRecord());
         clearButton.setOnAction(event -> mainViewModel.clearInput());
-
         deleteButton.setOnAction(event -> mainViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
         //deleteButton.disableProperty().bind(mainViewModel.deleteButtonDisabledProperty());
 
-        filterBoxRadioButton.setOnAction(event -> mainViewModel.filterBoxRadioButtonOnAction());
-        filterPickerRadioButton.setOnAction(event -> mainViewModel.filterPickerRadioButtonOnAction());
+        //filterBoxRadioButton.setOnAction(event -> mainViewModel.filterBoxRadioButtonOnAction());
+        //filterPickerRadioButton.setOnAction(event -> mainViewModel.filterPickerRadioButtonOnAction());
 
-        filterBox.setOnAction(event -> mainViewModel.filterBoxOnAction());
+        //filterBox.setOnAction(event -> mainViewModel.filterBoxOnAction());
 
-        fromDatePicker.setOnAction(event -> mainViewModel.fromDatePickerOnAction());
-        toDatePicker.setOnAction(event -> mainViewModel.toDatePickerOnAction());
+        //fromDatePicker.setOnAction(event -> mainViewModel.fromDatePickerOnAction());
+        //toDatePicker.setOnAction(event -> mainViewModel.toDatePickerOnAction());
     }
 
     private void initFilterBox() {
