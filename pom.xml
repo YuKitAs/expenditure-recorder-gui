@@ -13,6 +13,7 @@
         <junit.version>4.12</junit.version>
         <assertj.version>3.5.2</assertj.version>
         <google.http.client.version>1.22.0</google.http.client.version>
+        <mockito.version>2.0.2-beta</mockito.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,11 @@
             <groupId>com.google.http-client</groupId>
             <artifactId>google-http-client-jackson2</artifactId>
             <version>1.22.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>${mockito.version}</version>
         </dependency>
     </dependencies>
 

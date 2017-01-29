@@ -229,7 +229,7 @@ public class MainViewModel {
         }
 
         if (amountText.get() == null || !amountText.get().matches("[0-9]+(\\.[0-9]{0,2})?")) {
-            setAmountErrorTextProperty("Please enter a valid integer.");
+            setAmountErrorTextProperty("Please enter a valid amount.");
             isCorrect = false;
         }
 
