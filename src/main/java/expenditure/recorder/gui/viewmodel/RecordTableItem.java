@@ -24,7 +24,7 @@ public class RecordTableItem {
     }
 
     public static RecordTableItem from(String item, String amount, LocalDate date) {
-        return new RecordTableItem(item, (int) (Double.parseDouble(amount) * 100), date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return new RecordTableItem(item, MoneyFormatter.formatStringToInteger(amount), date.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     public String getItem() {
@@ -32,14 +32,18 @@ public class RecordTableItem {
     }
 
     public String getAmount() {
-        return MoneyFormatter.format(amountInCent);
+        return MoneyFormatter.formatIntegerToString(amountInCent);
     }
 
     public Integer getAmountInCent() {
         return amountInCent;
     }
 
-    public String getDate() {
+    public String getDateString() {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(date.atZone(ZoneId.systemDefault()));
+    }
+
+    public Instant getDateInstant() {
+        return date;
     }
 }

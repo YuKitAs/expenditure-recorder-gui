@@ -33,6 +33,6 @@ public class RecordTableItemTest {
 
     @Test
     public void getDateWithCorrectDate() {
-        assertThat(recordTableItem.getDate()).isEqualTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        assertThat(recordTableItem.getDateString()).isEqualTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 }

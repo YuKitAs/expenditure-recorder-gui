@@ -1,17 +1,22 @@
 package expenditure.recorder.gui.model;
 
-import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Key;
 
 import java.time.Instant;
 
 public class Record {
     @Key
-    private String item;
+    private final String item;
     @Key
-    private Integer amountInCent;
+    private final Integer amountInCent;
     @Key
-    private DateTime date;
+    private final Instant date;
+
+    public Record(String item, Integer amountInCent, Instant date) {
+        this.item = item;
+        this.amountInCent = amountInCent;
+        this.date = date;
+    }
 
     public String getItem() {
         return item;
@@ -22,6 +27,6 @@ public class Record {
     }
 
     public Instant getDate() {
-        return Instant.ofEpochMilli(date.getValue());
+        return date;
     }
 }
