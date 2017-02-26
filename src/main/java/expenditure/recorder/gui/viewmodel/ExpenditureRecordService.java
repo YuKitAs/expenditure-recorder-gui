@@ -1,7 +1,7 @@
 package expenditure.recorder.gui.viewmodel;
 
 import expenditure.recorder.gui.model.Record;
-import expenditure.recorder.gui.model.RecordDao;
+import expenditure.recorder.gui.model.RecordClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ExpenditureRecordService {
-    private final RecordDao recordDao;
+    private final RecordClient recordClient;
     private ObservableList<RecordTableItem> recordTableItems;
 
-    public ExpenditureRecordService(RecordDao recordDao) {
-        this.recordDao = recordDao;
+    public ExpenditureRecordService(RecordClient recordClient) {
+        this.recordClient = recordClient;
     }
 
     public ObservableList<RecordTableItem> getInitialRecordTableItems() {
         try {
-            List<Record> records = recordDao.getAllRecordsFromServer();
+            List<Record> records = recordClient.getAllRecordsFromServer();
             recordTableItems = FXCollections.observableArrayList(records.stream().map(RecordTableItem::from).collect(Collectors.toList()));
         } catch (IOException e) {
-            return FXCollections.emptyObservableList();
+            recordTableItems = FXCollections.observableArrayList();
         }
 
         return recordTableItems;
@@ -30,6 +30,12 @@ public class ExpenditureRecordService {
 
     public void addRecordTableItem(RecordTableItem recordTableItem) {
         recordTableItems.add(recordTableItem);
+
+        try {
+            uploadRecord(recordTableItem);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void removeRecordTableItem(RecordTableItem recordTableItem) {
@@ -38,5 +44,11 @@ public class ExpenditureRecordService {
 
     public Integer getTotalAmountInCent() {
         return recordTableItems.stream().mapToInt(RecordTableItem::getAmountInCent).sum();
+    }
+
+    private void uploadRecord(RecordTableItem recordTableItem) throws IOException {
+        Record record = new Record(recordTableItem.getItem(), recordTableItem.getAmountInCent(), recordTableItem.getDateInstant());
+
+        recordClient.addRecordToServer(record);
     }
 }
