@@ -1,6 +1,6 @@
 package expenditure.recorder.gui.viewmodel;
 
-import expenditure.recorder.gui.model.RecordDaoDefault;
+import expenditure.recorder.gui.model.RecordClientDefault;
 import expenditure.recorder.gui.viewmodel.filter.CurrentTimeRangeManager;
 import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
 import javafx.beans.property.*;
@@ -37,7 +37,7 @@ public class MainViewModel {
 
     private CurrentTimeRangeManager currentTimeRangeManager = CurrentTimeRangeManager.getInstance();
 
-    private ExpenditureRecordService expenditureRecordService = new ExpenditureRecordService(new RecordDaoDefault());
+    private ExpenditureRecordService expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault());
 
     public MainViewModel() {
         recordTable.setValue(expenditureRecordService.getInitialRecordTableItems());
@@ -140,7 +140,7 @@ public class MainViewModel {
 
         private void ShowRecordsOfToday() {
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
+                LocalDate date = LocalDate.parse(record.getDateString());
 
                 if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
                     filteredRecords.add(record);
@@ -154,7 +154,7 @@ public class MainViewModel {
 
         private void ShowRecordsInLast7Days() {
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
+                LocalDate date = LocalDate.parse(record.getDateString());
 
                 if (date.isAfter(LocalDate.now().minusWeeks(1))) {
                     filteredRecords.add(record);
@@ -168,7 +168,7 @@ public class MainViewModel {
 
         private void ShowRecordsInLast30Days() {
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
+                LocalDate date = LocalDate.parse(record.getDateString());
 
                 if (date.isAfter(LocalDate.now().minusMonths(1))) {
                     filteredRecords.add(record);
@@ -192,7 +192,7 @@ public class MainViewModel {
             }
 
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
+                LocalDate date = LocalDate.parse(record.getDateString());
 
                 if (fromDate == null) {
                     if (date.isBefore(toDate) || date.isEqual(toDate)) {
@@ -215,7 +215,7 @@ public class MainViewModel {
         }
     */
     private void updateTotalAmount() {
-        totalAmountText.set("€ " + MoneyFormatter.format(expenditureRecordService.getTotalAmountInCent()));
+        totalAmountText.set("€ " + MoneyFormatter.formatIntegerToString(expenditureRecordService.getTotalAmountInCent()));
     }
 
     private Boolean checkInput() {
