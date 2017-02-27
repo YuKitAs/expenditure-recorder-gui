@@ -23,12 +23,16 @@ public class RecordClientDefaultTest {
     @Test
     public void getAllRecordsFromServer_WithCorrectRecords() throws IOException {
         stubFor(get(urlEqualTo("/expenditure_recorder/expenditures")).willReturn(aResponse().
-                withBody(
-                        "[{\"id\":\"00000000-0000-0000-0000-000000000000\",\"date\":1488233591,\"amountInCent\":100,\"item\":\"Hoho\"}]")));
+                withBody(ResourceFileReader.read(RecordClientDefaultTest.class, "ExpenditureRecorderServerResponse.json"))));
 
-        assertThat(recordClient.getAllRecordsFromServer()).hasSize(1);
-        assertThat(recordClient.getAllRecordsFromServer().get(0).getDate()).isEqualTo(Instant.ofEpochMilli(1488233591));
-        assertThat(recordClient.getAllRecordsFromServer().get(0).getAmountInCent()).isEqualTo(100);
-        assertThat(recordClient.getAllRecordsFromServer().get(0).getItem()).isEqualTo("Hoho");
+        assertThat(recordClient.getAllRecordsFromServer()).hasSize(2);
+
+        assertThat(recordClient.getAllRecordsFromServer().get(0).getDate()).isEqualTo(Instant.ofEpochMilli(1470639600));
+        assertThat(recordClient.getAllRecordsFromServer().get(0).getAmountInCent()).isEqualTo(200);
+        assertThat(recordClient.getAllRecordsFromServer().get(0).getItem()).isEqualTo("Ice Cream");
+
+        assertThat(recordClient.getAllRecordsFromServer().get(1).getDate()).isEqualTo(Instant.ofEpochMilli(1475798400));
+        assertThat(recordClient.getAllRecordsFromServer().get(1).getAmountInCent()).isEqualTo(600);
+        assertThat(recordClient.getAllRecordsFromServer().get(1).getItem()).isEqualTo("Big Ice Cream");
     }
 }
