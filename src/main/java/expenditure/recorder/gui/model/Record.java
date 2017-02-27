@@ -1,18 +1,29 @@
 package expenditure.recorder.gui.model;
 
-import com.google.api.client.util.Key;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Record {
-    @Key
+    private static class Properties {
+        private static final String ID = "id";
+        private static final String DATE = "date";
+        private static final String AMOUNT_IN_CENT = "amountInCent";
+        private static final String ITEM = "item";
+    }
+
+    private final String id;
     private final String item;
-    @Key
     private final Integer amountInCent;
-    @Key
     private final Instant date;
 
-    public Record(String item, Integer amountInCent, Instant date) {
+    @JsonCreator
+    public Record(@JsonProperty(Properties.ID) String id, @JsonProperty(Properties.ITEM) String item, @JsonProperty(Properties.AMOUNT_IN_CENT) Integer amountInCent,
+                  @JsonProperty(Properties.DATE) Instant date) {
+        this.id = id;
         this.item = item;
         this.amountInCent = amountInCent;
         this.date = date;
