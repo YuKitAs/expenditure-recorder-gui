@@ -1,61 +1,52 @@
 package expenditure.recorder.gui.model;
 
-import com.google.api.client.http.*;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.http.json.JsonHttpContent;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.JsonObjectParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class RecordClientDefault implements RecordClient {
-    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+    private static final String EXPENDITURE_RECORDER_URL = "http://localhost:8080/expenditure_recorder/expenditures";
 
     @Override
     public List<Record> getAllRecordsFromServer() throws IOException {
-        HttpResponse response = requestServerForRecords();
-        return Arrays.asList(response.parseAs(Record[].class));
+        HttpGet httpGet = new HttpGet(EXPENDITURE_RECORDER_URL);
+
+        CloseableHttpResponse response = getHttpClientsWithAuthentication().execute(httpGet);
+
+        String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+
+        return JsonMapper.getInstance().readValue(content, new TypeReference<List<Record>>() {
+        });
     }
 
     @Override
     public void addRecordToServer(Record record) throws IOException {
-        HttpRequestFactory requestFactory = HTTP_TRANSPORT.createRequestFactory(request -> request.setHeaders(getRequestHeaders()));
-        HttpContent content = new JsonHttpContent(JSON_FACTORY, record);
-        HttpRequest request = requestFactory.buildPostRequest(ExpenditureRecordUrl.expenditures(), content);
+        HttpPost httpPost = new HttpPost(EXPENDITURE_RECORDER_URL);
+        StringEntity entity = new StringEntity(JsonMapper.getInstance().writeValueAsString(record));
+        httpPost.setEntity(entity);
+        httpPost.setHeader("Content-type", "application/json");
 
-        request.execute();
+        CloseableHttpResponse response = getHttpClientsWithAuthentication().execute(httpPost);
     }
 
-    private HttpResponse requestServerForRecords() throws IOException {
-        HttpRequestFactory requestFactory =
-                HTTP_TRANSPORT.createRequestFactory(request -> {
-                    request.setHeaders(getRequestHeaders());
-                    request.setParser(new JsonObjectParser(JSON_FACTORY));
-                });
-
-        HttpRequest request = requestFactory.buildGetRequest(ExpenditureRecordUrl.expenditures());
-        return request.execute();
-    }
-
-    private static class ExpenditureRecordUrl extends GenericUrl {
-        private ExpenditureRecordUrl(String encodedUrl) {
-            super(encodedUrl);
-        }
-
-        private static ExpenditureRecordUrl expenditures() {
-            return new ExpenditureRecordUrl("http://localhost:8080/expenditure_recorder/expenditures");
-        }
-
-    }
-
-    private HttpHeaders getRequestHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuthentication("testuser", "nopassword");
-
-        return headers;
+    private CloseableHttpClient getHttpClientsWithAuthentication() {
+        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(
+                new AuthScope("localhost", 8080),
+                new UsernamePasswordCredentials("testuser", "nopassword"));
+        return HttpClients.custom().setDefaultCredentialsProvider(credentialsProvider).build();
     }
 }
