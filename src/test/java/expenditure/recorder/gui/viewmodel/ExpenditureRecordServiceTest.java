@@ -50,7 +50,7 @@ public class ExpenditureRecordServiceTest {
 
         assertThat(recordTableItems.get(0).getItem()).isEqualTo("some item");
         assertThat(recordTableItems.get(0).getAmount()).isEqualTo("0.42");
-        assertThat(recordTableItems.get(0).getDateString()).isEqualTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        assertThat(recordTableItems.get(0).getDate()).isEqualTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 
     @Test

@@ -39,7 +39,8 @@ public class RecordTableItem {
         return amountInCent;
     }
 
-    public String getDateString() {
+    // Don't rename this method, since it is used for data binding.
+    public String getDate() {
         return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(date.atZone(ZoneId.systemDefault()));
     }
 

@@ -140,7 +140,7 @@ public class MainViewModel {
 
         private void ShowRecordsOfToday() {
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDateString());
+                LocalDate date = LocalDate.parse(record.getDate());
 
                 if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
                     filteredRecords.add(record);
@@ -154,7 +154,7 @@ public class MainViewModel {
 
         private void ShowRecordsInLast7Days() {
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDateString());
+                LocalDate date = LocalDate.parse(record.getDate());
 
                 if (date.isAfter(LocalDate.now().minusWeeks(1))) {
                     filteredRecords.add(record);
@@ -168,7 +168,7 @@ public class MainViewModel {
 
         private void ShowRecordsInLast30Days() {
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDateString());
+                LocalDate date = LocalDate.parse(record.getDate());
 
                 if (date.isAfter(LocalDate.now().minusMonths(1))) {
                     filteredRecords.add(record);
@@ -192,7 +192,7 @@ public class MainViewModel {
             }
 
             records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDateString());
+                LocalDate date = LocalDate.parse(record.getDate());
 
                 if (fromDate == null) {
                     if (date.isBefore(toDate) || date.isEqual(toDate)) {
