@@ -1,20 +1,16 @@
 package expenditure.recorder.gui.viewmodel;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class RecordTableItemTest {
-    RecordTableItem recordTableItem;
+    private static final LocalDate DATE = LocalDate.of(2017, 2, 27);
+    private static final String DATE_STRING = "2017-02-27";
 
-    @Before
-    public void setUp() {
-        recordTableItem = RecordTableItem.from("some item", "42", LocalDate.now());
-    }
+    private RecordTableItem recordTableItem = RecordTableItem.from("some item", "42", DATE);
 
     @Test
     public void getItemWithCorrectItemString() {
@@ -33,6 +29,6 @@ public class RecordTableItemTest {
 
     @Test
     public void getDateWithCorrectDate() {
-        assertThat(recordTableItem.getDateString()).isEqualTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        assertThat(recordTableItem.getDate()).isEqualTo(DATE_STRING);
     }
 }

@@ -9,7 +9,7 @@ import java.time.Month;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainViewModelTest {
-    MainViewModel viewModel = new MainViewModel();
+    private MainViewModel viewModel = new MainViewModel();
 
     @Before
     public void setUp() {
