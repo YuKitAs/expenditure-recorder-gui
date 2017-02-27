@@ -1,13 +1,13 @@
 package expenditure.recorder.gui.viewmodel;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.model.RecordClient;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ExpenditureRecordService {
     private final RecordClient recordClient;

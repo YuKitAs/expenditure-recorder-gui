@@ -1,12 +1,12 @@
 package expenditure.recorder.gui.viewmodel;
 
-import expenditure.recorder.gui.model.Record;
-import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+
+import expenditure.recorder.gui.model.Record;
+import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
 
 public class RecordTableItem {
     private final String item;
@@ -24,7 +24,8 @@ public class RecordTableItem {
     }
 
     public static RecordTableItem from(String item, String amount, LocalDate date) {
-        return new RecordTableItem(item, MoneyFormatter.formatStringToInteger(amount), date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return new RecordTableItem(item, MoneyFormatter.formatStringToInteger(amount),
+                date.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
     public String getItem() {

@@ -1,6 +1,7 @@
 package expenditure.recorder.gui.model;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -44,9 +45,7 @@ public class RecordClientDefault implements RecordClient {
 
     private CloseableHttpClient getHttpClientsWithAuthentication() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(
-                new AuthScope("localhost", 8080),
-                new UsernamePasswordCredentials("testuser", "nopassword"));
+        credentialsProvider.setCredentials(new AuthScope("localhost", 8080), new UsernamePasswordCredentials("testuser", "nopassword"));
         return HttpClients.custom().setDefaultCredentialsProvider(credentialsProvider).build();
     }
 }

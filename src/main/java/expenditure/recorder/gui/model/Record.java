@@ -21,8 +21,8 @@ public class Record {
     private final Instant date;
 
     @JsonCreator
-    public Record(@JsonProperty(Properties.ID) String id, @JsonProperty(Properties.ITEM) String item, @JsonProperty(Properties.AMOUNT_IN_CENT) Integer amountInCent,
-                  @JsonProperty(Properties.DATE) Instant date) {
+    public Record(@JsonProperty(Properties.ID) String id, @JsonProperty(Properties.ITEM) String item,
+            @JsonProperty(Properties.AMOUNT_IN_CENT) Integer amountInCent, @JsonProperty(Properties.DATE) Instant date) {
         this.id = id;
         this.item = item;
         this.amountInCent = amountInCent;

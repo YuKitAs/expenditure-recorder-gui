@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class JsonMapper {
     private static ObjectMapper instance;
 
-
     public static synchronized ObjectMapper getInstance() {
         if (instance == null) {
             instance = new ObjectMapper().findAndRegisterModules();

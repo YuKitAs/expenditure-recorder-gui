@@ -1,5 +1,9 @@
 package expenditure.recorder.gui.view;
 
+import java.net.URL;
+import java.time.LocalDate;
+import java.util.ResourceBundle;
+
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.viewmodel.MainViewModel;
 import expenditure.recorder.gui.viewmodel.RecordTableItem;
@@ -7,13 +11,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DateCell;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-
-import java.net.URL;
-import java.time.LocalDate;
-import java.util.ResourceBundle;
 
 public class WindowController implements Initializable {
     @FXML
@@ -57,8 +65,7 @@ public class WindowController implements Initializable {
 
     private final ToggleGroup radioButtonGroup = new ToggleGroup();
 
-    private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Today", "Last 7 Days",
-            "Last 30 Days");
+    private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Today", "Last 7 Days", "Last 30 Days");
 
     private MainViewModel mainViewModel = new MainViewModel();
 

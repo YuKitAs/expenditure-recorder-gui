@@ -1,10 +1,5 @@
 package expenditure.recorder.gui.viewmodel;
 
-import expenditure.recorder.gui.model.Record;
-import expenditure.recorder.gui.model.RecordClient;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +9,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import expenditure.recorder.gui.model.Record;
+import expenditure.recorder.gui.model.RecordClient;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
