@@ -15,6 +15,7 @@ public class ExpenditureRecordService {
 
     public ExpenditureRecordService(RecordClient recordClient) {
         this.recordClient = recordClient;
+        this.recordTableItems = FXCollections.observableArrayList();
     }
 
     public ObservableList<RecordTableItem> getInitialRecordTableItems() {
@@ -22,7 +23,7 @@ public class ExpenditureRecordService {
             List<Record> records = recordClient.getAllRecordsFromServer();
             recordTableItems = FXCollections.observableArrayList(records.stream().map(RecordTableItem::from).collect(Collectors.toList()));
         } catch (IOException e) {
-            recordTableItems = FXCollections.observableArrayList();
+            // Currently do nothing.
         }
 
         return recordTableItems;
@@ -34,7 +35,7 @@ public class ExpenditureRecordService {
         try {
             uploadRecord(recordTableItem);
         } catch (IOException e) {
-            e.printStackTrace();
+            // Current do nothing.
         }
     }
 
@@ -47,7 +48,7 @@ public class ExpenditureRecordService {
     }
 
     private void uploadRecord(RecordTableItem recordTableItem) throws IOException {
-        Record record = new Record(recordTableItem.getItem(), recordTableItem.getAmountInCent(), recordTableItem.getDateInstant());
+        Record record = new Record(null, recordTableItem.getItem(), recordTableItem.getAmountInCent(), recordTableItem.getDateInstant());
 
         recordClient.addRecordToServer(record);
     }
