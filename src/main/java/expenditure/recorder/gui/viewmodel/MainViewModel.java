@@ -67,10 +67,13 @@ public class MainViewModel {
     }
 
     public void addRecord() {
-        if (checkInput()) {
-            expenditureRecordService.addRecordTableItem(RecordTableItem.from(itemText.get(), amountText.get(), date.getValue()));
-            updateTotalAmount();
+        if (!checkInput()) {
+            return;
         }
+
+        expenditureRecordService.addRecordTableItem(RecordTableItem.from(itemText.get(), amountText.get(), date.getValue()));
+        updateTotalAmount();
+        clearInput();
     }
 
     public void clearInput() {
