@@ -18,12 +18,19 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import expenditure.recorder.gui.view.configuration.RestApiClientConfiguration;
+
 public class RecordClientDefault implements RecordClient {
-    private static final String EXPENDITURE_RECORDER_URL = "http://localhost:8080/expenditure_recorder/expenditures";
+    private static final String EXPENDITURE_RECORDER_URL_PATH = "/expenditure_recorder/expenditures";
+    private final RestApiClientConfiguration restApiClientConfiguration;
+
+    public RecordClientDefault(RestApiClientConfiguration restApiClientConfiguration) {
+        this.restApiClientConfiguration = restApiClientConfiguration;
+    }
 
     @Override
     public List<Record> getAllRecordsFromServer() throws IOException {
-        HttpGet httpGet = new HttpGet(EXPENDITURE_RECORDER_URL);
+        HttpGet httpGet = new HttpGet(buildUrlWithPath(EXPENDITURE_RECORDER_URL_PATH));
 
         CloseableHttpResponse response = getHttpClientsWithAuthentication().execute(httpGet);
 
@@ -35,17 +42,23 @@ public class RecordClientDefault implements RecordClient {
 
     @Override
     public void addRecordToServer(Record record) throws IOException {
-        HttpPost httpPost = new HttpPost(EXPENDITURE_RECORDER_URL);
+        HttpPost httpPost = new HttpPost(buildUrlWithPath(EXPENDITURE_RECORDER_URL_PATH));
         StringEntity entity = new StringEntity(JsonMapper.getInstance().writeValueAsString(record));
         httpPost.setEntity(entity);
         httpPost.setHeader("Content-type", "application/json");
 
-        CloseableHttpResponse response = getHttpClientsWithAuthentication().execute(httpPost);
+        getHttpClientsWithAuthentication().execute(httpPost);
     }
 
     private CloseableHttpClient getHttpClientsWithAuthentication() {
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(new AuthScope("localhost", 8080), new UsernamePasswordCredentials("testuser", "nopassword"));
+        credentialsProvider.setCredentials(new AuthScope(restApiClientConfiguration.getHost(), restApiClientConfiguration.getPort()),
+                new UsernamePasswordCredentials(restApiClientConfiguration.getUsername(), restApiClientConfiguration.getPassword()));
+
         return HttpClients.custom().setDefaultCredentialsProvider(credentialsProvider).build();
+    }
+
+    private String buildUrlWithPath(String urlPath) {
+        return String.format("http://%s:%d%s", restApiClientConfiguration.getHost(), restApiClientConfiguration.getPort(), urlPath);
     }
 }

@@ -2,11 +2,15 @@ package expenditure.recorder.gui.model;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.Instant;
+
+import expenditure.recorder.gui.TestConfigurationReader;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
@@ -19,9 +23,15 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RecordClientDefaultTest {
-    private final RecordClientDefault recordClient = new RecordClientDefault();
+    private RecordClientDefault recordClient;
+
+    @Before
+    public void setUp() throws URISyntaxException {
+        recordClient = new RecordClientDefault(TestConfigurationReader.getConfiguration().getRecordClientConfiguration());
+    }
+
     @Rule
-    public WireMockRule wm = new WireMockRule(options().port(8080));
+    public WireMockRule wm = new WireMockRule(options().port(9000));
 
     @Test
     public void getAllRecordsFromServer_WithCorrectRecords() throws IOException {

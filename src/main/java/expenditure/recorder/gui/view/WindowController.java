@@ -1,10 +1,13 @@
 package expenditure.recorder.gui.view;
 
 import java.net.URL;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import expenditure.recorder.gui.model.Record;
+import expenditure.recorder.gui.view.configuration.ConfigurationFileReader;
+import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfiguration;
 import expenditure.recorder.gui.viewmodel.MainViewModel;
 import expenditure.recorder.gui.viewmodel.RecordTableItem;
 import javafx.collections.FXCollections;
@@ -67,12 +70,12 @@ public class WindowController implements Initializable {
 
     private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Today", "Last 7 Days", "Last 30 Days");
 
-    private MainViewModel mainViewModel = new MainViewModel();
-
-    // private final expenditure.recorder.gui.RecordsPersistence recordsPersistence;
+    private static final String HOME_FOLDER_PATH = System.getProperty("user.home");
+    private static final String CONFIG_FILE_NAME = ".expenditure-recorder-gui.conf";
+    private final MainViewModel mainViewModel = new MainViewModel(
+            ExpenditureRecorderGuiConfiguration.from(ConfigurationFileReader.getFile(Paths.get(HOME_FOLDER_PATH, CONFIG_FILE_NAME))));
 
     public WindowController() {
-        // recordsPersistence = null;
     }
 
     @Override
@@ -155,18 +158,4 @@ public class WindowController implements Initializable {
         filterBoxRadioButton.setToggleGroup(radioButtonGroup);
         filterPickerRadioButton.setToggleGroup(radioButtonGroup);
     }
-
-    /*private void persistentRecords() {
-        List<Record> plainRecordList = convertToPlainList(records);
-
-        // recordsPersistence.persistent(plainRecordList);
-    }
-
-    private List<Record> convertToPlainList(ObservableList<Record> records) {
-        List<Record> plainRecordList = new ArrayList<>();
-
-        plainRecordList.addAll(records);
-
-        return plainRecordList;
-    }*/
 }

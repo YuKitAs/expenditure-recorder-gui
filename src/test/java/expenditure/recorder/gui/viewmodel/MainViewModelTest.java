@@ -3,16 +3,20 @@ package expenditure.recorder.gui.viewmodel;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.Month;
+
+import expenditure.recorder.gui.TestConfigurationReader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MainViewModelTest {
-    private MainViewModel viewModel = new MainViewModel();
+    private MainViewModel viewModel;
 
     @Before
-    public void setUp() {
+    public void setUp() throws URISyntaxException {
+        viewModel = new MainViewModel(TestConfigurationReader.getConfiguration());
         viewModel.setItemTextProperty("some item");
         viewModel.setAmountTextProperty("42");
         viewModel.setDateProperty(LocalDate.of(2017, Month.JANUARY, 1));

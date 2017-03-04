@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import expenditure.recorder.gui.model.RecordClientDefault;
+import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfiguration;
 import expenditure.recorder.gui.viewmodel.filter.CurrentTimeRangeManager;
 import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
 import javafx.beans.property.BooleanProperty;
@@ -42,9 +43,11 @@ public class MainViewModel {
 
     private CurrentTimeRangeManager currentTimeRangeManager = CurrentTimeRangeManager.getInstance();
 
-    private ExpenditureRecordService expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault());
+    private ExpenditureRecordService expenditureRecordService;
 
-    public MainViewModel() {
+    public MainViewModel(ExpenditureRecorderGuiConfiguration configuration) {
+        expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault(configuration.getRecordClientConfiguration()));
+
         recordTable.setValue(expenditureRecordService.getInitialRecordTableItems());
 
         filterBox.set(new SingleSelectionModel<String>() {
