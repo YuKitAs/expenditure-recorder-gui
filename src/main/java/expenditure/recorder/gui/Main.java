@@ -1,3 +1,5 @@
+package expenditure.recorder.gui;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +11,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("expenditure-recorder-gui.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("expenditure-recorder-gui.fxml"));
         Font.loadFont(getClass().getResourceAsStream("KGTraditionalFractions.ttf"), 30);
         Font.loadFont(getClass().getResourceAsStream("Roundo-SemiBold.otf"), 15);
         primaryStage.setTitle("Expenditure Recorder");
