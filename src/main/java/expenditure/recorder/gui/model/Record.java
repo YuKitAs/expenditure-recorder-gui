@@ -1,12 +1,11 @@
 package expenditure.recorder.gui.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Record {
     private static class Properties {
         private static final String ID = "id";
@@ -15,6 +14,7 @@ public class Record {
         private static final String ITEM = "item";
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String id;
     private final String item;
     private final Integer amountInCent;
@@ -27,6 +27,10 @@ public class Record {
         this.item = item;
         this.amountInCent = amountInCent;
         this.date = date;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getItem() {
