@@ -13,6 +13,7 @@ import java.time.Instant;
 import expenditure.recorder.gui.TestConfigurationReader;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -52,9 +53,19 @@ public class RecordClientDefaultTest {
     @Test
     public void addRecordToServer() throws IOException {
         stubFor(post(urlPathEqualTo("/expenditure_recorder/expenditures")).withRequestBody(
-                equalToJson(ResourceFileReader.read(RecordClientDefaultTest.class, "NewExpenditureRecord.json"))));
+                equalToJson(ResourceFileReader.read(RecordClientDefaultTest.class, "NewExpenditureRecord.json")))
+                .willReturn(
+                        aResponse().withBody(ResourceFileReader.read(RecordClientDefaultTest.class, "NewExpenditureRecordWithId.json"))));
 
-        Record record = new Record("00000000-0000-0000-0000-000000000000", "Huge Ice Cream", 1000, Instant.ofEpochMilli(1488240000));
+        Record record = new Record(null, "Huge Ice Cream", 1000, Instant.ofEpochMilli(1488240000));
         recordClient.addRecordToServer(record);
+    }
+
+    @Test
+    public void deleteRecordOnServer() throws Exception {
+        stubFor(delete(urlPathEqualTo("/expenditure_recorder/expenditures/00000000-0000-0000-0000-000000000000")).willReturn(
+                aResponse().withStatus(200)));
+
+        recordClient.deleteRecordOnServer("00000000-0000-0000-0000-000000000000");
     }
 }

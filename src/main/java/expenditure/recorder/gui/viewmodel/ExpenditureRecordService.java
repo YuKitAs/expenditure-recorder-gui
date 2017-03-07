@@ -30,10 +30,10 @@ public class ExpenditureRecordService {
     }
 
     public void addRecordTableItem(RecordTableItem recordTableItem) {
-        recordTableItems.add(recordTableItem);
+        Record record = new Record(null, recordTableItem.getItem(), recordTableItem.getAmountInCent(), recordTableItem.getDateInstant());
 
         try {
-            uploadRecord(recordTableItem);
+            recordTableItems.add(RecordTableItem.from(recordClient.addRecordToServer(record)));
         } catch (IOException e) {
             // Current do nothing.
         }
@@ -41,15 +41,15 @@ public class ExpenditureRecordService {
 
     public void removeRecordTableItem(RecordTableItem recordTableItem) {
         recordTableItems.remove(recordTableItem);
+
+        try {
+            recordClient.deleteRecordOnServer(recordTableItem.getId());
+        } catch (IOException e) {
+            // Current do nothing.
+        }
     }
 
     public Integer getTotalAmountInCent() {
         return recordTableItems.stream().mapToInt(RecordTableItem::getAmountInCent).sum();
-    }
-
-    private void uploadRecord(RecordTableItem recordTableItem) throws IOException {
-        Record record = new Record(null, recordTableItem.getItem(), recordTableItem.getAmountInCent(), recordTableItem.getDateInstant());
-
-        recordClient.addRecordToServer(record);
     }
 }

@@ -6,5 +6,7 @@ import java.util.List;
 public interface RecordClient {
     List<Record> getAllRecordsFromServer() throws IOException;
 
-    void addRecordToServer(Record record) throws IOException;
+    Record addRecordToServer(Record record) throws IOException;
+
+    void deleteRecordOnServer(String id) throws IOException;
 }

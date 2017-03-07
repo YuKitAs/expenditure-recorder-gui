@@ -7,6 +7,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -31,9 +32,7 @@ public class RecordClientDefault implements RecordClient {
     @Override
     public List<Record> getAllRecordsFromServer() throws IOException {
         HttpGet httpGet = new HttpGet(buildUrlWithPath(EXPENDITURE_RECORDER_URL_PATH));
-
         CloseableHttpResponse response = getHttpClientsWithAuthentication().execute(httpGet);
-
         String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
 
         return JsonMapper.getInstance().readValue(content, new TypeReference<List<Record>>() {
@@ -41,13 +40,23 @@ public class RecordClientDefault implements RecordClient {
     }
 
     @Override
-    public void addRecordToServer(Record record) throws IOException {
+    public Record addRecordToServer(Record record) throws IOException {
         HttpPost httpPost = new HttpPost(buildUrlWithPath(EXPENDITURE_RECORDER_URL_PATH));
         StringEntity entity = new StringEntity(JsonMapper.getInstance().writeValueAsString(record));
         httpPost.setEntity(entity);
         httpPost.setHeader("Content-type", "application/json");
 
-        getHttpClientsWithAuthentication().execute(httpPost);
+        CloseableHttpResponse response = getHttpClientsWithAuthentication().execute(httpPost);
+        String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
+
+        return JsonMapper.getInstance().readValue(content, Record.class);
+    }
+
+    @Override
+    public void deleteRecordOnServer(String id) throws IOException {
+        HttpDelete httpDelete = new HttpDelete(buildUrlWithPath(EXPENDITURE_RECORDER_URL_PATH + "/" + id));
+
+        getHttpClientsWithAuthentication().execute(httpDelete);
     }
 
     private CloseableHttpClient getHttpClientsWithAuthentication() {

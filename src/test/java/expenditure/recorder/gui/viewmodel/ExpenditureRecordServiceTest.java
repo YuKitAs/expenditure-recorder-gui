@@ -1,6 +1,7 @@
 package expenditure.recorder.gui.viewmodel;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,14 +40,14 @@ public class ExpenditureRecordServiceTest {
 
         recordClient = mock(RecordClient.class);
         when(recordClient.getAllRecordsFromServer()).thenReturn(records);
-
         service = new ExpenditureRecordService(recordClient);
 
         recordTable.setValue(service.getInitialRecordTableItems());
     }
 
     @Test
-    public void getInitialRecordTableItems() {
+    public void getInitialRecordTableItems() throws IOException {
+
         ObservableList<RecordTableItem> recordTableItems = service.getInitialRecordTableItems();
 
         assertThat(recordTableItems.get(0).getItem()).isEqualTo("some item");
@@ -55,10 +56,15 @@ public class ExpenditureRecordServiceTest {
     }
 
     @Test
+    @Ignore
     public void addRecordTableItem() throws IOException {
+        when(recordClient.addRecordToServer(record)).thenReturn(
+                new Record("0000", "some item", 42, LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+
         service.addRecordTableItem(recordTableItem);
 
         assertThat(recordTable.getValue().contains(recordTableItem)).isTrue();
+        assertThat(recordTable.getValue().get(0).getId()).isEqualTo("0000");
     }
 
     @Test
