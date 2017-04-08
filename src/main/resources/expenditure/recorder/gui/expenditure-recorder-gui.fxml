@@ -57,11 +57,11 @@
                 text="Delete"/>
         <Text fill="RED" layoutX="227.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="147.0"/>
         <Text fill="RED" layoutX="136.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="147.0"/>
-        <Text fx:id="itemErrorText" fill="#805500" layoutX="110.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0"
+        <Text fx:id="itemErrorText" fill="#dd2a07" layoutX="16.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="147.0"/>
-        <Text fx:id="amountErrorText" fill="#805500" layoutX="110.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0"
-              wrappingWidth="186.27099609375"/>
-        <Text fx:id="dateErrorText" fill="#805500" layoutX="110.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0"
+        <Text fx:id="amountErrorText" fill="#dd2a07" layoutX="17.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0"
+              wrappingWidth="223.27099609375"/>
+        <Text fx:id="dateErrorText" fill="#dd2a07" layoutX="16.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="147.0"/>
         <DatePicker fx:id="fromDatePicker" layoutX="363.0" layoutY="79.0" prefHeight="25.0" prefWidth="120.0"/>
         <DatePicker fx:id="toDatePicker" layoutX="363.0" layoutY="127.0" prefHeight="25.0" prefWidth="120.0"/>
