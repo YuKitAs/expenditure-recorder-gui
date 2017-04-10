@@ -51,5 +51,4 @@ public class MainViewModelTest {
         assertThat(viewModel.getAmountErrorTextProperty().get()).isEmpty();
         assertThat(viewModel.getDateErrorTextProperty().get()).isEmpty();
     }
-
 }

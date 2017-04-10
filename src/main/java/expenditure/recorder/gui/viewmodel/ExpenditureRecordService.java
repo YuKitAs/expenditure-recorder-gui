@@ -48,8 +48,4 @@ public class ExpenditureRecordService {
             // Current do nothing.
         }
     }
-
-    public Integer getTotalAmountInCent() {
-        return recordTableItems.stream().mapToInt(RecordTableItem::getAmountInCent).sum();
-    }
 }

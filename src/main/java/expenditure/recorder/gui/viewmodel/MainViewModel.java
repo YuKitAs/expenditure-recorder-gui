@@ -137,10 +137,12 @@ public class MainViewModel {
     private void displayFilteredRecords() {
         recordFilter.filterRecords();
         recordTable.setValue(recordFilter.getFilteredRecords());
+        updateTotalAmount();
     }
 
     private void updateTotalAmount() {
-        totalAmountText.set("€ " + MoneyFormatter.formatIntegerToString(expenditureRecordService.getTotalAmountInCent()));
+        totalAmountText.set(
+                "€ " + MoneyFormatter.formatIntegerToString(recordTable.get().stream().mapToInt(RecordTableItem::getAmountInCent).sum()));
     }
 
     private Boolean checkInput() {

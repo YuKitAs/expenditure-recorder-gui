@@ -74,13 +74,4 @@ public class ExpenditureRecordServiceTest {
 
         assertThat(recordTable.getValue().contains(item)).isFalse();
     }
-
-    @Test
-    public void getTotalAmountInCent() {
-        if (recordTable.getValue().contains(recordTableItem)) {
-            assertThat(service.getTotalAmountInCent()).isEqualTo(1642);
-        } else {
-            assertThat(service.getTotalAmountInCent()).isEqualTo(42);
-        }
-    }
 }
