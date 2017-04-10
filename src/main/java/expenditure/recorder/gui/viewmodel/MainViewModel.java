@@ -49,7 +49,7 @@ public class MainViewModel {
     public MainViewModel(ExpenditureRecorderGuiConfiguration configuration) {
         expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault(configuration.getRecordClientConfiguration()));
 
-        recordTable.setValue(expenditureRecordService.getInitialRecordTableItems());
+        recordTable.setValue(expenditureRecordService.getAllRecordTableItemsFromServer());
 
         filterBox.set(new SingleSelectionModel<String>() {
             @Override
@@ -64,8 +64,6 @@ public class MainViewModel {
         });
 
         updateTotalAmount();
-
-        recordFilter = new RecordFilter(recordTable.getValue());
     }
 
     public void showRecordsFromDatabase() {
@@ -79,6 +77,7 @@ public class MainViewModel {
 
         expenditureRecordService.addRecordTableItem(RecordTableItem.from(itemText.get(), amountText.get(), date.getValue()));
         updateTotalAmount();
+
         clearInput();
     }
 
@@ -91,8 +90,8 @@ public class MainViewModel {
     }
 
     public void deleteRecord(RecordTableItem record) {
+        recordTable.get().remove(record);
         expenditureRecordService.removeRecordTableItem(record);
-
         updateTotalAmount();
     }
 
@@ -135,6 +134,7 @@ public class MainViewModel {
     }
 
     private void displayFilteredRecords() {
+        recordFilter = new RecordFilter(expenditureRecordService.getAllRecordTableItemsFromServer());
         recordFilter.filterRecords();
         recordTable.setValue(recordFilter.getFilteredRecords());
         updateTotalAmount();

@@ -42,13 +42,13 @@ public class ExpenditureRecordServiceTest {
         when(recordClient.getAllRecordsFromServer()).thenReturn(records);
         service = new ExpenditureRecordService(recordClient);
 
-        recordTable.setValue(service.getInitialRecordTableItems());
+        recordTable.setValue(service.getAllRecordTableItemsFromServer());
     }
 
     @Test
     public void getInitialRecordTableItems() throws IOException {
 
-        ObservableList<RecordTableItem> recordTableItems = service.getInitialRecordTableItems();
+        ObservableList<RecordTableItem> recordTableItems = service.getAllRecordTableItemsFromServer();
 
         assertThat(recordTableItems.get(0).getItem()).isEqualTo("some item");
         assertThat(recordTableItems.get(0).getAmount()).isEqualTo("0.42");

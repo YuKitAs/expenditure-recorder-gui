@@ -18,7 +18,7 @@ public class ExpenditureRecordService {
         this.recordTableItems = FXCollections.observableArrayList();
     }
 
-    public ObservableList<RecordTableItem> getInitialRecordTableItems() {
+    public ObservableList<RecordTableItem> getAllRecordTableItemsFromServer() {
         try {
             List<Record> records = recordClient.getAllRecordsFromServer();
             recordTableItems = FXCollections.observableArrayList(records.stream().map(RecordTableItem::from).collect(Collectors.toList()));
@@ -40,8 +40,6 @@ public class ExpenditureRecordService {
     }
 
     public void removeRecordTableItem(RecordTableItem recordTableItem) {
-        recordTableItems.remove(recordTableItem);
-
         try {
             recordClient.deleteRecordOnServer(recordTableItem.getId());
         } catch (IOException e) {
