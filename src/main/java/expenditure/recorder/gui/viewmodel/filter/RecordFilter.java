@@ -4,13 +4,13 @@ import expenditure.recorder.gui.viewmodel.RecordTableItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class FilterViewModel {
+public class RecordFilter {
     private ObservableList<RecordTableItem> records;
     private ObservableList<RecordTableItem> filteredRecords = FXCollections.observableArrayList();
 
     private CurrentTimeRangeManager currentTimeRangeManager = CurrentTimeRangeManager.getInstance();
 
-    public FilterViewModel(ObservableList<RecordTableItem> records) {
+    public RecordFilter(ObservableList<RecordTableItem> records) {
         this.records = records;
     }
 

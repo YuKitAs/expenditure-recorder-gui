@@ -7,7 +7,7 @@ import java.util.List;
 import expenditure.recorder.gui.model.RecordClientDefault;
 import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfiguration;
 import expenditure.recorder.gui.viewmodel.filter.CurrentTimeRangeManager;
-import expenditure.recorder.gui.viewmodel.filter.FilterViewModel;
+import expenditure.recorder.gui.viewmodel.filter.RecordFilter;
 import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -44,7 +44,7 @@ public class MainViewModel {
 
     private ExpenditureRecordService expenditureRecordService;
 
-    private FilterViewModel filterViewModel;
+    private RecordFilter recordFilter;
 
     public MainViewModel(ExpenditureRecorderGuiConfiguration configuration) {
         expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault(configuration.getRecordClientConfiguration()));
@@ -65,7 +65,7 @@ public class MainViewModel {
 
         updateTotalAmount();
 
-        filterViewModel = new FilterViewModel(recordTable.getValue());
+        recordFilter = new RecordFilter(recordTable.getValue());
     }
 
     public void showRecordsFromDatabase() {
@@ -135,8 +135,8 @@ public class MainViewModel {
     }
 
     private void displayFilteredRecords() {
-        filterViewModel.filterRecords();
-        recordTable.setValue(filterViewModel.getFilteredRecords());
+        recordFilter.filterRecords();
+        recordTable.setValue(recordFilter.getFilteredRecords());
     }
 
     private void updateTotalAmount() {
