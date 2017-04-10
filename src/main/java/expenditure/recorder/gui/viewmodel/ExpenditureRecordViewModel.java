@@ -7,18 +7,18 @@ import java.util.List;
 import expenditure.recorder.gui.model.RecordClientDefault;
 import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfiguration;
 import expenditure.recorder.gui.viewmodel.filter.CurrentTimeRangeManager;
-import expenditure.recorder.gui.viewmodel.filter.RecordFilter;
 import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SingleSelectionModel;
 
-public class MainViewModel {
+public class ExpenditureRecordViewModel {
     private StringProperty itemText = new SimpleStringProperty();
     private StringProperty amountText = new SimpleStringProperty();
     private ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
@@ -44,10 +44,16 @@ public class MainViewModel {
 
     private ExpenditureRecordService expenditureRecordService;
 
-    public MainViewModel(ExpenditureRecorderGuiConfiguration configuration) {
+    public ExpenditureRecordViewModel(ExpenditureRecorderGuiConfiguration configuration) {
         expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault(configuration.getRecordClientConfiguration()));
 
-        recordTable.setValue(expenditureRecordService.getAllRecordTableItemsFromServer());
+        SimpleListProperty<RecordTableItem> filteredRecordItemsProperty = new SimpleListProperty<>(
+                expenditureRecordService.getAllRecordTableItemsFromServer());
+        filteredRecordItemsProperty.addListener((observable, oldValue, newValue) -> totalAmountText.setValue(
+                "€ " + MoneyFormatter.formatIntegerToString(
+                        observable.getValue().stream().mapToInt(RecordTableItem::getAmountInCent).sum())));
+
+        recordTable.bind(filteredRecordItemsProperty);
 
         filterBox.set(new SingleSelectionModel<String>() {
             @Override
@@ -61,11 +67,8 @@ public class MainViewModel {
             }
         });
 
-        updateTotalAmount();
-    }
-
-    public void showRecordsFromDatabase() {
-        updateTotalAmount();
+        fromDate.addListener((observable, oldValue, newValue) -> expenditureRecordService.setStartDate(newValue));
+        toDate.addListener((observable, oldValue, newValue) -> expenditureRecordService.setEndDate(newValue));
     }
 
     public void addRecord() {
@@ -74,7 +77,6 @@ public class MainViewModel {
         }
 
         expenditureRecordService.addRecordTableItem(RecordTableItem.from(itemText.get(), amountText.get(), date.getValue()));
-        updateTotalAmount();
 
         clearInput();
     }
@@ -88,12 +90,10 @@ public class MainViewModel {
     }
 
     public void deleteRecord(RecordTableItem record) {
-        recordTable.get().remove(record);
         expenditureRecordService.removeRecordTableItem(record);
-        updateTotalAmount();
     }
 
-    public void filterBoxOnAction() {
+    /*public void filterBoxOnAction() {
         if (filterBoxRadioButtonSelected.get()) {
             currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
 
@@ -114,12 +114,10 @@ public class MainViewModel {
     }
 
     public void fromDatePickerOnAction() {
-        currentTimeRangeManager.setFromDate(fromDate.getValue());
+
+        currentTimeRangeManager.setFromDate();
         currentTimeRangeManager.setCurrentTimeRange("Custom");
 
-        if (filterPickerRadioButtonSelected.get()) {
-            displayFilteredRecords();
-        }
     }
 
     public void toDatePickerOnAction() {
@@ -136,12 +134,7 @@ public class MainViewModel {
         recordFilter.filterRecords();
         recordTable.setValue(recordFilter.getFilteredRecords());
         updateTotalAmount();
-    }
-
-    private void updateTotalAmount() {
-        totalAmountText.set(
-                "€ " + MoneyFormatter.formatIntegerToString(recordTable.get().stream().mapToInt(RecordTableItem::getAmountInCent).sum()));
-    }
+    }*/
 
     private Boolean checkInput() {
         clearErrorText();

@@ -11,12 +11,12 @@ import expenditure.recorder.gui.TestConfigurationReader;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MainViewModelTest {
-    private MainViewModel viewModel;
+public class ExpenditureRecordViewModelTest {
+    private ExpenditureRecordViewModel viewModel;
 
     @Before
     public void setUp() throws URISyntaxException {
-        viewModel = new MainViewModel(TestConfigurationReader.getConfiguration());
+        viewModel = new ExpenditureRecordViewModel(TestConfigurationReader.getConfiguration());
         viewModel.setItemTextProperty("some item");
         viewModel.setAmountTextProperty("42");
         viewModel.setDateProperty(LocalDate.of(2017, Month.JANUARY, 1));
