@@ -30,7 +30,7 @@ public class FilterPredicate {
                     return false;
                 }
             case LAST_30_DAYS:
-                if (date.isAfter(LocalDate.now().minusMonths(1))) {
+                if (date.isAfter(LocalDate.now().minusDays(30))) {
                     return true;
                 } else {
                     return false;
