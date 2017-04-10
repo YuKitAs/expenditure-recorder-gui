@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import expenditure.recorder.gui.model.Record;
+import expenditure.recorder.gui.viewmodel.utilities.DateConverter;
 import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
 
 public class RecordTableItem {
@@ -26,8 +27,7 @@ public class RecordTableItem {
     }
 
     public static RecordTableItem from(String item, String amount, LocalDate date) {
-        return new RecordTableItem(null, item, MoneyFormatter.formatStringToInteger(amount),
-                date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return new RecordTableItem(null, item, MoneyFormatter.formatStringToInteger(amount), DateConverter.convertLocalDateToInstant(date));
     }
 
     public String getId() {
