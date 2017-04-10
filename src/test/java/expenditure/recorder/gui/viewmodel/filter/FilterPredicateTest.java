@@ -54,24 +54,24 @@ public class FilterPredicateTest {
     public void customTimeRangeFilterWithNullFromDate() {
         filterPredicate = new FilterPredicate(TimeRange.CUSTOM);
 
-        assertThat(filterPredicate.customTimeRangeFilter(null, TO_DATE, TODAY)).isTrue();
-        assertThat(filterPredicate.customTimeRangeFilter(null, TO_DATE, TODAY.plus(Duration.ofDays(4)))).isFalse();
+        assertThat(filterPredicate.timeRangeFilter(null, TO_DATE, TODAY)).isTrue();
+        assertThat(filterPredicate.timeRangeFilter(null, TO_DATE, TODAY.plus(Duration.ofDays(4)))).isFalse();
     }
 
     @Test
     public void customTimeRangeFilterWithNullToDate() {
         filterPredicate = new FilterPredicate(TimeRange.CUSTOM);
 
-        assertThat(filterPredicate.customTimeRangeFilter(FROM_DATE, null, TODAY)).isTrue();
-        assertThat(filterPredicate.customTimeRangeFilter(FROM_DATE, null, IN_LAST_7_DAYS)).isFalse();
+        assertThat(filterPredicate.timeRangeFilter(FROM_DATE, null, TODAY)).isTrue();
+        assertThat(filterPredicate.timeRangeFilter(FROM_DATE, null, IN_LAST_7_DAYS)).isFalse();
     }
 
     @Test
     public void customTimeRangeFilter() {
         filterPredicate = new FilterPredicate(TimeRange.CUSTOM);
 
-        assertThat(filterPredicate.customTimeRangeFilter(FROM_DATE, TO_DATE, TODAY)).isTrue();
-        assertThat(filterPredicate.customTimeRangeFilter(FROM_DATE, TO_DATE, TODAY.plus(Duration.ofDays(4)))).isFalse();
-        assertThat(filterPredicate.customTimeRangeFilter(FROM_DATE, TO_DATE, IN_LAST_7_DAYS)).isFalse();
+        assertThat(filterPredicate.timeRangeFilter(FROM_DATE, TO_DATE, TODAY)).isTrue();
+        assertThat(filterPredicate.timeRangeFilter(FROM_DATE, TO_DATE, TODAY.plus(Duration.ofDays(4)))).isFalse();
+        assertThat(filterPredicate.timeRangeFilter(FROM_DATE, TO_DATE, IN_LAST_7_DAYS)).isFalse();
     }
 }

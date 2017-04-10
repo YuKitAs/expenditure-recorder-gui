@@ -15,32 +15,18 @@ public class FilterPredicate {
         LocalDate date = getDateFromInstant(dateInstant);
 
         switch (currentTimeRange) {
-            case ALL:
-                return true;
             case TODAY:
-                if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return date.equals(LocalDate.now(ZoneId.systemDefault()));
             case LAST_7_DAYS:
-                if (date.isAfter(LocalDate.now().minusWeeks(1))) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return date.isAfter(LocalDate.now().minusWeeks(1));
             case LAST_30_DAYS:
-                if (date.isAfter(LocalDate.now().minusDays(30))) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return date.isAfter(LocalDate.now().minusDays(30));
+            default:
+                return true;
         }
-        Default:
-        return false;
     }
 
-    public boolean customTimeRangeFilter(LocalDate fromDate, LocalDate toDate, Instant dateInstant) {
+    public boolean timeRangeFilter(LocalDate fromDate, LocalDate toDate, Instant dateInstant) {
         LocalDate date = getDateFromInstant(dateInstant);
 
         if (fromDate == null && toDate == null) {
@@ -65,6 +51,6 @@ public class FilterPredicate {
     }
 
     private LocalDate getDateFromInstant(Instant dateInstant) {
-        return LocalDate.from(dateInstant.atZone(ZoneId.of("CET")));
+        return LocalDate.from(dateInstant.atZone(ZoneId.systemDefault()));
     }
 }

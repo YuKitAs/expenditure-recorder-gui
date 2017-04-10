@@ -44,8 +44,6 @@ public class MainViewModel {
 
     private ExpenditureRecordService expenditureRecordService;
 
-    private RecordFilter recordFilter;
-
     public MainViewModel(ExpenditureRecorderGuiConfiguration configuration) {
         expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault(configuration.getRecordClientConfiguration()));
 
@@ -134,7 +132,7 @@ public class MainViewModel {
     }
 
     private void displayFilteredRecords() {
-        recordFilter = new RecordFilter(expenditureRecordService.getAllRecordTableItemsFromServer());
+        RecordFilter recordFilter = new RecordFilter(expenditureRecordService.getAllRecordTableItemsFromServer());
         recordFilter.filterRecords();
         recordTable.setValue(recordFilter.getFilteredRecords());
         updateTotalAmount();

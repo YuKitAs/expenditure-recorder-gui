@@ -23,7 +23,7 @@ public class RecordFilter {
 
         if (currentTimeRange.equals(TimeRange.CUSTOM)) {
             records.forEach(record -> {
-                if (filterPredicate.customTimeRangeFilter(currentTimeRangeManager.getFromDate(), currentTimeRangeManager.getToDate(),
+                if (filterPredicate.timeRangeFilter(currentTimeRangeManager.getFromDate(), currentTimeRangeManager.getToDate(),
                         record.getDateInstant())) {
                     filteredRecords.add(record);
                 }
