@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.view.configuration.ConfigurationFileReader;
 import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfiguration;
-import expenditure.recorder.gui.viewmodel.MainViewModel;
+import expenditure.recorder.gui.viewmodel.ExpenditureRecordViewModel;
 import expenditure.recorder.gui.viewmodel.RecordTableItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +26,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 
-public class WindowController implements Initializable {
+public class ExpenditureRecordView implements Initializable {
     @FXML
     private TextField itemField;
     @FXML
@@ -73,34 +73,35 @@ public class WindowController implements Initializable {
     private static final String HOME_FOLDER_PATH = System.getProperty("user.home");
     private static final String CONFIG_FILE_NAME = ".expenditure-recorder-gui.conf";
 
-    private final MainViewModel mainViewModel = new MainViewModel(
+    private final ExpenditureRecordViewModel expenditureRecordViewModel = new ExpenditureRecordViewModel(
             ExpenditureRecorderGuiConfiguration.from(ConfigurationFileReader.getFile(Paths.get(HOME_FOLDER_PATH, CONFIG_FILE_NAME))));
 
-    public WindowController() {
+    public ExpenditureRecordView() {
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // Binding
-        itemField.textProperty().bindBidirectional(mainViewModel.getItemTextProperty());
-        amountField.textProperty().bindBidirectional(mainViewModel.getAmountTextProperty());
-        datePicker.valueProperty().bindBidirectional(mainViewModel.getDateProperty());
+        itemField.textProperty().bindBidirectional(expenditureRecordViewModel.getItemTextProperty());
+        amountField.textProperty().bindBidirectional(expenditureRecordViewModel.getAmountTextProperty());
+        datePicker.valueProperty().bindBidirectional(expenditureRecordViewModel.getDateProperty());
 
-        itemErrorText.textProperty().bind(mainViewModel.getItemErrorTextProperty());
-        amountErrorText.textProperty().bind(mainViewModel.getAmountErrorTextProperty());
-        dateErrorText.textProperty().bind(mainViewModel.getDateErrorTextProperty());
+        itemErrorText.textProperty().bind(expenditureRecordViewModel.getItemErrorTextProperty());
+        amountErrorText.textProperty().bind(expenditureRecordViewModel.getAmountErrorTextProperty());
+        dateErrorText.textProperty().bind(expenditureRecordViewModel.getDateErrorTextProperty());
 
-        recordTable.itemsProperty().bind(mainViewModel.getRecordTableProperty());
+        recordTable.itemsProperty().bindBidirectional(expenditureRecordViewModel.getRecordTableProperty());
 
-        filterBox.selectionModelProperty().bindBidirectional(mainViewModel.getFilterBoxProperty());
+        filterBox.selectionModelProperty().bindBidirectional(expenditureRecordViewModel.getFilterBoxProperty());
 
-        filterBoxRadioButton.selectedProperty().bindBidirectional(mainViewModel.getFilterBoxRadioButtonSelectedProperty());
-        filterPickerRadioButton.selectedProperty().bindBidirectional(mainViewModel.getFilterPickerRadioButtonSelectedProperty());
+        filterBoxRadioButton.selectedProperty().bindBidirectional(expenditureRecordViewModel.getFilterBoxRadioButtonSelectedProperty());
+        filterPickerRadioButton.selectedProperty()
+                .bindBidirectional(expenditureRecordViewModel.getFilterPickerRadioButtonSelectedProperty());
 
-        fromDatePicker.valueProperty().bindBidirectional(mainViewModel.getFromDateProperty());
-        toDatePicker.valueProperty().bindBidirectional(mainViewModel.getToDateProperty());
+        fromDatePicker.valueProperty().bindBidirectional(expenditureRecordViewModel.getFromDateProperty());
+        toDatePicker.valueProperty().bindBidirectional(expenditureRecordViewModel.getToDateProperty());
 
-        totalAmountText.textProperty().bind(mainViewModel.getTotalAmountTextProperty());
+        totalAmountText.textProperty().bind(expenditureRecordViewModel.getTotalAmountTextProperty());
 
         // Init
         itemCol.setCellValueFactory(new PropertyValueFactory<Record, String>("item"));
@@ -110,21 +111,19 @@ public class WindowController implements Initializable {
         initFilterBox();
         initDatePicker();
 
-        mainViewModel.showRecordsFromDatabase();
-
         // setOnActions
-        addButton.setOnAction(event -> mainViewModel.addRecord());
-        clearButton.setOnAction(event -> mainViewModel.clearInput());
-        deleteButton.setOnAction(event -> mainViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
-        //deleteButton.disableProperty().bind(mainViewModel.deleteButtonDisabledProperty());
+        addButton.setOnAction(event -> expenditureRecordViewModel.addRecord());
+        clearButton.setOnAction(event -> expenditureRecordViewModel.clearInput());
+        deleteButton.setOnAction(event -> expenditureRecordViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
+        //deleteButton.disableProperty().bind(expenditureRecordViewModel.deleteButtonDisabledProperty());
 
-        filterBoxRadioButton.setOnAction(event -> mainViewModel.filterBoxRadioButtonOnAction());
-        filterPickerRadioButton.setOnAction(event -> mainViewModel.filterPickerRadioButtonOnAction());
+        //filterBoxRadioButton.setOnAction(event -> expenditureRecordViewModel.filterBoxRadioButtonOnAction());
+        //filterPickerRadioButton.setOnAction(event -> expenditureRecordViewModel.filterPickerRadioButtonOnAction());
 
-        filterBox.setOnAction(event -> mainViewModel.filterBoxOnAction());
+        //filterBox.setOnAction(event -> expenditureRecordViewModel.filterBoxOnAction());
 
-        fromDatePicker.setOnAction(event -> mainViewModel.fromDatePickerOnAction());
-        toDatePicker.setOnAction(event -> mainViewModel.toDatePickerOnAction());
+        //fromDatePicker.setOnAction(event -> expenditureRecordViewModel.fromDatePickerOnAction());
+        //toDatePicker.setOnAction(event -> expenditureRecordViewModel.toDatePickerOnAction());
     }
 
     private void initFilterBox() {
