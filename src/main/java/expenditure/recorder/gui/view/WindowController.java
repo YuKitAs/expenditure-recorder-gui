@@ -72,6 +72,7 @@ public class WindowController implements Initializable {
 
     private static final String HOME_FOLDER_PATH = System.getProperty("user.home");
     private static final String CONFIG_FILE_NAME = ".expenditure-recorder-gui.conf";
+
     private final MainViewModel mainViewModel = new MainViewModel(
             ExpenditureRecorderGuiConfiguration.from(ConfigurationFileReader.getFile(Paths.get(HOME_FOLDER_PATH, CONFIG_FILE_NAME))));
 
@@ -117,13 +118,13 @@ public class WindowController implements Initializable {
         deleteButton.setOnAction(event -> mainViewModel.deleteRecord(recordTable.getSelectionModel().getSelectedItem()));
         //deleteButton.disableProperty().bind(mainViewModel.deleteButtonDisabledProperty());
 
-        //filterBoxRadioButton.setOnAction(event -> mainViewModel.filterBoxRadioButtonOnAction());
-        //filterPickerRadioButton.setOnAction(event -> mainViewModel.filterPickerRadioButtonOnAction());
+        filterBoxRadioButton.setOnAction(event -> mainViewModel.filterBoxRadioButtonOnAction());
+        filterPickerRadioButton.setOnAction(event -> mainViewModel.filterPickerRadioButtonOnAction());
 
-        //filterBox.setOnAction(event -> mainViewModel.filterBoxOnAction());
+        filterBox.setOnAction(event -> mainViewModel.filterBoxOnAction());
 
-        //fromDatePicker.setOnAction(event -> mainViewModel.fromDatePickerOnAction());
-        //toDatePicker.setOnAction(event -> mainViewModel.toDatePickerOnAction());
+        fromDatePicker.setOnAction(event -> mainViewModel.fromDatePickerOnAction());
+        toDatePicker.setOnAction(event -> mainViewModel.toDatePickerOnAction());
     }
 
     private void initFilterBox() {

@@ -7,6 +7,7 @@ import java.util.List;
 import expenditure.recorder.gui.model.RecordClientDefault;
 import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfiguration;
 import expenditure.recorder.gui.viewmodel.filter.CurrentTimeRangeManager;
+import expenditure.recorder.gui.viewmodel.filter.FilterViewModel;
 import expenditure.recorder.gui.viewmodel.utilities.MoneyFormatter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -14,7 +15,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SingleSelectionModel;
 
@@ -28,7 +28,6 @@ public class MainViewModel {
     private StringProperty dateErrorText = new SimpleStringProperty();
 
     private ObjectProperty<ObservableList<RecordTableItem>> recordTable = new SimpleObjectProperty<>();
-    private ObservableList<RecordTableItem> filteredRecords = FXCollections.observableArrayList();
 
     private ObjectProperty<SingleSelectionModel<String>> filterBox = new SimpleObjectProperty<>();
     private List<String> timeRanges = Arrays.asList("All", "Today", "Last 7 Days", "Last 30 Days");
@@ -44,6 +43,8 @@ public class MainViewModel {
     private CurrentTimeRangeManager currentTimeRangeManager = CurrentTimeRangeManager.getInstance();
 
     private ExpenditureRecordService expenditureRecordService;
+
+    private FilterViewModel filterViewModel;
 
     public MainViewModel(ExpenditureRecorderGuiConfiguration configuration) {
         expenditureRecordService = new ExpenditureRecordService(new RecordClientDefault(configuration.getRecordClientConfiguration()));
@@ -63,6 +64,8 @@ public class MainViewModel {
         });
 
         updateTotalAmount();
+
+        filterViewModel = new FilterViewModel(recordTable.getValue());
     }
 
     public void showRecordsFromDatabase() {
@@ -89,142 +92,53 @@ public class MainViewModel {
 
     public void deleteRecord(RecordTableItem record) {
         expenditureRecordService.removeRecordTableItem(record);
+
         updateTotalAmount();
     }
 
-    /*
-        public void filterBoxOnAction() {
-            if (filterBoxRadioButtonSelected.get()) {
-                currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
-                filterRecords();
-            }
-        }
-
-        public void filterBoxRadioButtonOnAction() {
+    public void filterBoxOnAction() {
+        if (filterBoxRadioButtonSelected.get()) {
             currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
-            filterRecords();
+
+            displayFilteredRecords();
         }
+    }
 
-        public void filterPickerRadioButtonOnAction() {
-            currentTimeRangeManager.setCurrentTimeRange("Custom");
-            filterRecords();
+    public void filterBoxRadioButtonOnAction() {
+        currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
+
+        displayFilteredRecords();
+    }
+
+    public void filterPickerRadioButtonOnAction() {
+        currentTimeRangeManager.setCurrentTimeRange("Custom");
+
+        displayFilteredRecords();
+    }
+
+    public void fromDatePickerOnAction() {
+        currentTimeRangeManager.setFromDate(fromDate.getValue());
+        currentTimeRangeManager.setCurrentTimeRange("Custom");
+
+        if (filterPickerRadioButtonSelected.get()) {
+            displayFilteredRecords();
         }
+    }
 
-        public void fromDatePickerOnAction() {
-            currentTimeRangeManager.setFromDate(fromDate.getValue());
-            currentTimeRangeManager.setCurrentTimeRange("Custom");
+    public void toDatePickerOnAction() {
+        currentTimeRangeManager.setToDate(toDate.getValue());
+        currentTimeRangeManager.setCurrentTimeRange("Custom");
 
-            if (filterPickerRadioButtonSelected.get()) {
-                filterRecords();
-            }
+        if (filterPickerRadioButtonSelected.get()) {
+            displayFilteredRecords();
         }
+    }
 
-        public void toDatePickerOnAction() {
-            currentTimeRangeManager.setToDate(toDate.getValue());
-            currentTimeRangeManager.setCurrentTimeRange("Custom");
+    private void displayFilteredRecords() {
+        filterViewModel.filterRecords();
+        recordTable.setValue(filterViewModel.getFilteredRecords());
+    }
 
-            if (filterPickerRadioButtonSelected.get()) {
-                filterRecords();
-            }
-        }
-
-
-        public void filterRecords() {
-            filteredRecords.clear();
-
-            TimeRange currentTimeRange = currentTimeRangeManager.getCurrentTimeRange();
-
-            if (currentTimeRange.equals(TimeRange.ALL)) {
-                recordTable.setValue(records);
-                updateTotalAmount(records);
-            } else if (currentTimeRange.equals(TimeRange.TODAY)) {
-                ShowRecordsOfToday();
-            } else if (currentTimeRange.equals(TimeRange.LAST_7_DAYS)) {
-                ShowRecordsInLast7Days();
-            } else if (currentTimeRange.equals(TimeRange.LAST_30_DAYS)) {
-                ShowRecordsInLast30Days();
-            } else if (currentTimeRange.equals(TimeRange.CUSTOM)) {
-                showRecordsInCustomTimeRange();
-            }
-        }
-
-
-        private void ShowRecordsOfToday() {
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
-
-                if (date.equals(LocalDate.now(ZoneId.of("CET")))) {
-                    filteredRecords.add(record);
-                }
-            });
-
-            recordTable.setValue(filteredRecords);
-
-            updateTotalAmount(filteredRecords);
-        }
-
-        private void ShowRecordsInLast7Days() {
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
-
-                if (date.isAfter(LocalDate.now().minusWeeks(1))) {
-                    filteredRecords.add(record);
-                }
-            });
-
-            recordTable.setValue(filteredRecords);
-
-            updateTotalAmount(filteredRecords);
-        }
-
-        private void ShowRecordsInLast30Days() {
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
-
-                if (date.isAfter(LocalDate.now().minusMonths(1))) {
-                    filteredRecords.add(record);
-                }
-            });
-
-            recordTable.setValue(filteredRecords);
-
-            updateTotalAmount(filteredRecords);
-        }
-
-        private void showRecordsInCustomTimeRange() {
-            LocalDate fromDate = currentTimeRangeManager.getFromDate();
-            LocalDate toDate = currentTimeRangeManager.getToDate();
-
-            if (fromDate == null && toDate == null) {
-                recordTable.setValue(records);
-                updateTotalAmount(records);
-
-                return;
-            }
-
-            records.forEach(record -> {
-                LocalDate date = LocalDate.parse(record.getDate());
-
-                if (fromDate == null) {
-                    if (date.isBefore(toDate) || date.isEqual(toDate)) {
-                        filteredRecords.add(record);
-                    }
-                } else if (toDate == null) {
-                    if (date.isAfter(fromDate) || date.isEqual(fromDate)) {
-                        filteredRecords.add(record);
-                    }
-                } else {
-                    if ((date.isAfter(fromDate) || date.isEqual(fromDate)) && (date.isBefore(toDate) || date.isEqual(toDate))) {
-                        filteredRecords.add(record);
-                    }
-                }
-            });
-
-            recordTable.setValue(filteredRecords);
-
-            updateTotalAmount(filteredRecords);
-        }
-    */
     private void updateTotalAmount() {
         totalAmountText.set("€ " + MoneyFormatter.formatIntegerToString(expenditureRecordService.getTotalAmountInCent()));
     }
