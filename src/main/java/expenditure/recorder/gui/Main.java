@@ -15,7 +15,7 @@ public class Main extends Application {
         Font.loadFont(getClass().getResourceAsStream("KGTraditionalFractions.ttf"), 30);
         Font.loadFont(getClass().getResourceAsStream("Roundo-SemiBold.otf"), 15);
         primaryStage.setTitle("Expenditure Recorder");
-        Scene scene = new Scene(root, 501, 500);
+        Scene scene = new Scene(root, 500, 700);
         scene.getStylesheets().addAll(getClass().getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
