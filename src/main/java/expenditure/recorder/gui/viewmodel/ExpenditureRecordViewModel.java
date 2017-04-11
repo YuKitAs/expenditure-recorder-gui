@@ -36,6 +36,8 @@ public class ExpenditureRecordViewModel {
 
     private StringProperty totalAmountText = new SimpleStringProperty();
 
+    private StringProperty itemKeyWord = new SimpleStringProperty();
+
     private ExpenditureRecordService expenditureRecordService;
 
     public ExpenditureRecordViewModel(ExpenditureRecorderGuiConfiguration configuration) {
@@ -69,6 +71,8 @@ public class ExpenditureRecordViewModel {
                 }
             }
         }));
+
+        itemKeyWord.addListener((observable, oldValue, newValue) -> expenditureRecordService.setPredicate(newValue));
     }
 
     public void addRecord() {
@@ -204,5 +208,9 @@ public class ExpenditureRecordViewModel {
 
     public void setToDateDisabled(boolean toDateDisabled) {
         this.toDateDisabled.set(toDateDisabled);
+    }
+
+    public StringProperty getItemKeyWordProperty() {
+        return itemKeyWord;
     }
 }

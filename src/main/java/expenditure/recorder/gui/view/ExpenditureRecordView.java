@@ -56,6 +56,8 @@ public class ExpenditureRecordView implements Initializable {
     private Text amountErrorText;
     @FXML
     private Text dateErrorText;
+    @FXML
+    private TextField searchField;
 
     private static final String HOME_FOLDER_PATH = System.getProperty("user.home");
     private static final String CONFIG_FILE_NAME = ".expenditure-recorder-gui.conf";
@@ -68,7 +70,7 @@ public class ExpenditureRecordView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        initTextFields();
+        initInputFields();
         initTexts();
         initRecordTable();
         initFilterBox();
@@ -76,10 +78,12 @@ public class ExpenditureRecordView implements Initializable {
         initButtons();
     }
 
-    private void initTextFields() {
+    private void initInputFields() {
         itemField.textProperty().bindBidirectional(expenditureRecordViewModel.getItemTextProperty());
         amountField.textProperty().bindBidirectional(expenditureRecordViewModel.getAmountTextProperty());
         datePicker.valueProperty().bindBidirectional(expenditureRecordViewModel.getDateProperty());
+
+        searchField.textProperty().bindBidirectional(expenditureRecordViewModel.getItemKeyWordProperty());
     }
 
     private void initTexts() {

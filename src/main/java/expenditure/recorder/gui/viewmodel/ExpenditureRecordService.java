@@ -49,6 +49,10 @@ public class ExpenditureRecordService {
         updatePredicate();
     }
 
+    public void setPredicate(String keyWord) {
+        filteredRecordTableItems.setPredicate(recordTableItem -> recordTableItem.getItem().toLowerCase().contains(keyWord.toLowerCase()));
+    }
+
     public void addRecordTableItem(RecordTableItem recordTableItem) {
         Record record = new Record(null, recordTableItem.getItem(), recordTableItem.getAmountInCent(), recordTableItem.getDateInstant());
 
