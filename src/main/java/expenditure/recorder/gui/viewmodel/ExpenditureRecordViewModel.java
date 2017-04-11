@@ -31,10 +31,10 @@ public class ExpenditureRecordViewModel {
     private ObjectProperty<LocalDate> fromDate = new SimpleObjectProperty<>();
     private ObjectProperty<LocalDate> toDate = new SimpleObjectProperty<>();
 
-    private StringProperty totalAmountText = new SimpleStringProperty();
+    private BooleanProperty fromDateDisabled = new SimpleBooleanProperty();
+    private BooleanProperty toDateDisabled = new SimpleBooleanProperty();
 
-    private BooleanProperty filterBoxRadioButtonSelected = new SimpleBooleanProperty();
-    private BooleanProperty filterPickerRadioButtonSelected = new SimpleBooleanProperty();
+    private StringProperty totalAmountText = new SimpleStringProperty();
 
     private ExpenditureRecordService expenditureRecordService;
 
@@ -55,10 +55,18 @@ public class ExpenditureRecordViewModel {
         filterBoxItem.addListener(((observable, oldValue, newValue) -> {
             expenditureRecordService.setStartDate(CurrentTimeRangeManager.getStartDate(newValue));
 
-            if (newValue.equals("All")) {
-                expenditureRecordService.setEndDate(null);
+            if (newValue.equals("Customize")) {
+                setFromDateDisabled(false);
+                setToDateDisabled(false);
             } else {
-                expenditureRecordService.setEndDate(LocalDate.now());
+                setFromDateDisabled(true);
+                setToDateDisabled(true);
+
+                if (newValue.equals("All")) {
+                    expenditureRecordService.setEndDate(null);
+                } else {
+                    expenditureRecordService.setEndDate(LocalDate.now());
+                }
             }
         }));
     }
@@ -73,6 +81,10 @@ public class ExpenditureRecordViewModel {
         clearInput();
     }
 
+    public void deleteRecord(RecordTableItem record) {
+        expenditureRecordService.removeRecordTableItem(record);
+    }
+
     public void clearInput() {
         clearErrorText();
 
@@ -80,53 +92,6 @@ public class ExpenditureRecordViewModel {
         setAmountTextProperty("");
         setDateProperty(null);
     }
-
-    public void deleteRecord(RecordTableItem record) {
-        expenditureRecordService.removeRecordTableItem(record);
-    }
-
-    /*public void filterBoxOnAction() {
-        if (filterBoxRadioButtonSelected.get()) {
-            currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
-
-            displayFilteredRecords();
-        }
-    }
-
-    public void filterBoxRadioButtonOnAction() {
-        currentTimeRangeManager.setCurrentTimeRange(filterBox.get().getSelectedItem());
-
-        displayFilteredRecords();
-    }
-
-    public void filterPickerRadioButtonOnAction() {
-        currentTimeRangeManager.setCurrentTimeRange("Custom");
-
-        displayFilteredRecords();
-    }
-
-    public void fromDatePickerOnAction() {
-
-        currentTimeRangeManager.setFromDate();
-        currentTimeRangeManager.setCurrentTimeRange("Custom");
-
-    }
-
-    public void toDatePickerOnAction() {
-        currentTimeRangeManager.setToDate(toDate.getValue());
-        currentTimeRangeManager.setCurrentTimeRange("Custom");
-
-        if (filterPickerRadioButtonSelected.get()) {
-            displayFilteredRecords();
-        }
-    }
-
-    private void displayFilteredRecords() {
-        RecordFilter recordFilter = new RecordFilter(expenditureRecordService.getAllRecordTableItemsFromServer());
-        recordFilter.filterRecords();
-        recordTable.setValue(recordFilter.getFilteredRecords());
-        updateTotalAmount();
-    }*/
 
     private Boolean checkInput() {
         clearErrorText();
@@ -217,19 +182,27 @@ public class ExpenditureRecordViewModel {
         return filterBoxItem;
     }
 
-    public BooleanProperty getFilterBoxRadioButtonSelectedProperty() {
-        return filterBoxRadioButtonSelected;
-    }
-
-    public BooleanProperty getFilterPickerRadioButtonSelectedProperty() {
-        return filterPickerRadioButtonSelected;
-    }
-
     public ObjectProperty<LocalDate> getFromDateProperty() {
         return fromDate;
     }
 
     public ObjectProperty<LocalDate> getToDateProperty() {
         return toDate;
+    }
+
+    public BooleanProperty fromDateDisabledProperty() {
+        return fromDateDisabled;
+    }
+
+    public BooleanProperty toDateDisabledProperty() {
+        return toDateDisabled;
+    }
+
+    public void setFromDateDisabled(boolean fromDateDisabled) {
+        this.fromDateDisabled.set(fromDateDisabled);
+    }
+
+    public void setToDateDisabled(boolean toDateDisabled) {
+        this.toDateDisabled.set(toDateDisabled);
     }
 }
