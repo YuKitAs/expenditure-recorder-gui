@@ -10,7 +10,6 @@ import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfigu
 import expenditure.recorder.gui.viewmodel.ExpenditureRecordViewModel;
 import expenditure.recorder.gui.viewmodel.RecordTableItem;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -66,8 +65,6 @@ public class ExpenditureRecordView implements Initializable {
 
     private final ToggleGroup radioButtonGroup = new ToggleGroup();
 
-    private final ObservableList<String> timeRanges = FXCollections.observableArrayList("All", "Today", "Last 7 Days", "Last 30 Days");
-
     private static final String HOME_FOLDER_PATH = System.getProperty("user.home");
     private static final String CONFIG_FILE_NAME = ".expenditure-recorder-gui.conf";
 
@@ -90,7 +87,7 @@ public class ExpenditureRecordView implements Initializable {
 
         recordTable.itemsProperty().bindBidirectional(expenditureRecordViewModel.getRecordTableProperty());
 
-        filterBox.selectionModelProperty().bindBidirectional(expenditureRecordViewModel.getFilterBoxProperty());
+        filterBox.valueProperty().bindBidirectional(expenditureRecordViewModel.getFilterBoxItemProperty());
 
         filterBoxRadioButton.selectedProperty().bindBidirectional(expenditureRecordViewModel.getFilterBoxRadioButtonSelectedProperty());
         filterPickerRadioButton.selectedProperty()
@@ -116,15 +113,10 @@ public class ExpenditureRecordView implements Initializable {
 
         //filterBoxRadioButton.setOnAction(event -> expenditureRecordViewModel.filterBoxRadioButtonOnAction());
         //filterPickerRadioButton.setOnAction(event -> expenditureRecordViewModel.filterPickerRadioButtonOnAction());
-
-        //filterBox.setOnAction(event -> expenditureRecordViewModel.filterBoxOnAction());
-
-        //fromDatePicker.setOnAction(event -> expenditureRecordViewModel.fromDatePickerOnAction());
-        //toDatePicker.setOnAction(event -> expenditureRecordViewModel.toDatePickerOnAction());
     }
 
     private void initFilterBox() {
-        filterBox.setItems(timeRanges);
+        filterBox.setItems(FXCollections.observableArrayList("All", "Today", "Last 7 Days", "Last 30 Days"));
         filterBox.getSelectionModel().selectFirst();
     }
 

@@ -23,12 +23,12 @@ import static org.mockito.Mockito.when;
 
 public class ExpenditureRecordServiceTest {
     private RecordClient recordClient;
+
     private Record record;
     private List<Record> records = new ArrayList<>();
     private ExpenditureRecordService service;
     private ObjectProperty<ObservableList<RecordTableItem>> recordTable = new SimpleObjectProperty<>();
     private final RecordTableItem recordTableItem = RecordTableItem.from("some other item", "16", LocalDate.now());
-
     @Before
     public void SetUp() throws IOException {
         record = mock(Record.class);
@@ -46,13 +46,23 @@ public class ExpenditureRecordServiceTest {
     }
 
     @Test
-    public void getInitialRecordTableItems() throws IOException {
+    public void getAllRecordTableItemsFromServer_WithCorrectRecordItem() throws IOException {
 
         ObservableList<RecordTableItem> recordTableItems = service.getAllRecordTableItemsFromServer();
 
         assertThat(recordTableItems.get(0).getItem()).isEqualTo("some item");
         assertThat(recordTableItems.get(0).getAmount()).isEqualTo("0.42");
         assertThat(recordTableItems.get(0).getDate()).isEqualTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+    }
+
+    @Test
+    public void setStartDate() throws Exception {
+
+    }
+
+    @Test
+    public void setEndDate() throws Exception {
+
     }
 
     @Test

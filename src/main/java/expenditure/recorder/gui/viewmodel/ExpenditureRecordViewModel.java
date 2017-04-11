@@ -1,8 +1,6 @@
 package expenditure.recorder.gui.viewmodel;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 import expenditure.recorder.gui.model.RecordClientDefault;
 import expenditure.recorder.gui.view.configuration.ExpenditureRecorderGuiConfiguration;
@@ -16,7 +14,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.control.SingleSelectionModel;
 
 public class ExpenditureRecordViewModel {
     private StringProperty itemText = new SimpleStringProperty();
@@ -29,8 +26,7 @@ public class ExpenditureRecordViewModel {
 
     private ObjectProperty<ObservableList<RecordTableItem>> recordTable = new SimpleObjectProperty<>();
 
-    private ObjectProperty<SingleSelectionModel<String>> filterBox = new SimpleObjectProperty<>();
-    private List<String> timeRanges = Arrays.asList("All", "Today", "Last 7 Days", "Last 30 Days");
+    private ObjectProperty<String> filterBoxItem = new SimpleObjectProperty<>();
 
     private ObjectProperty<LocalDate> fromDate = new SimpleObjectProperty<>();
     private ObjectProperty<LocalDate> toDate = new SimpleObjectProperty<>();
@@ -39,8 +35,6 @@ public class ExpenditureRecordViewModel {
 
     private BooleanProperty filterBoxRadioButtonSelected = new SimpleBooleanProperty();
     private BooleanProperty filterPickerRadioButtonSelected = new SimpleBooleanProperty();
-
-    private CurrentTimeRangeManager currentTimeRangeManager = CurrentTimeRangeManager.getInstance();
 
     private ExpenditureRecordService expenditureRecordService;
 
@@ -55,20 +49,18 @@ public class ExpenditureRecordViewModel {
 
         recordTable.bind(filteredRecordItemsProperty);
 
-        filterBox.set(new SingleSelectionModel<String>() {
-            @Override
-            protected String getModelItem(int index) {
-                return timeRanges.get(index);
-            }
-
-            @Override
-            protected int getItemCount() {
-                return 4;
-            }
-        });
-
         fromDate.addListener((observable, oldValue, newValue) -> expenditureRecordService.setStartDate(newValue));
         toDate.addListener((observable, oldValue, newValue) -> expenditureRecordService.setEndDate(newValue));
+
+        filterBoxItem.addListener(((observable, oldValue, newValue) -> {
+            expenditureRecordService.setStartDate(CurrentTimeRangeManager.getStartDate(newValue));
+
+            if (newValue.equals("All")) {
+                expenditureRecordService.setEndDate(null);
+            } else {
+                expenditureRecordService.setEndDate(LocalDate.now());
+            }
+        }));
     }
 
     public void addRecord() {
@@ -221,8 +213,8 @@ public class ExpenditureRecordViewModel {
         return recordTable;
     }
 
-    public ObjectProperty<SingleSelectionModel<String>> getFilterBoxProperty() {
-        return filterBox;
+    public ObjectProperty<String> getFilterBoxItemProperty() {
+        return filterBoxItem;
     }
 
     public BooleanProperty getFilterBoxRadioButtonSelectedProperty() {
