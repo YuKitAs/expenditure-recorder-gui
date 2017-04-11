@@ -14,6 +14,7 @@ import java.util.List;
 import expenditure.recorder.gui.model.Record;
 import expenditure.recorder.gui.model.RecordClient;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 
@@ -29,6 +30,7 @@ public class ExpenditureRecordServiceTest {
     private ExpenditureRecordService service;
     private ObjectProperty<ObservableList<RecordTableItem>> recordTable = new SimpleObjectProperty<>();
     private final RecordTableItem recordTableItem = RecordTableItem.from("some other item", "16", LocalDate.now());
+
     @Before
     public void SetUp() throws IOException {
         record = mock(Record.class);
@@ -43,26 +45,36 @@ public class ExpenditureRecordServiceTest {
         service = new ExpenditureRecordService(recordClient);
 
         recordTable.setValue(service.getAllRecordTableItemsFromServer());
+
+        SimpleListProperty<RecordTableItem> filteredRecordItemsProperty = new SimpleListProperty<>(
+                service.getAllRecordTableItemsFromServer());
+
+        recordTable.bind(filteredRecordItemsProperty);
     }
 
     @Test
     public void getAllRecordTableItemsFromServer_WithCorrectRecordItem() throws IOException {
-
         ObservableList<RecordTableItem> recordTableItems = service.getAllRecordTableItemsFromServer();
 
-        assertThat(recordTableItems.get(0).getItem()).isEqualTo("some item");
-        assertThat(recordTableItems.get(0).getAmount()).isEqualTo("0.42");
-        assertThat(recordTableItems.get(0).getDate()).isEqualTo(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+        assertThat(equalsDefaultRecordTableItem(recordTableItems.get(0))).isTrue();
     }
 
     @Test
     public void setStartDate() throws Exception {
+        service.setStartDate(LocalDate.now());
+        assertThat(equalsDefaultRecordTableItem(recordTable.get().get(0))).isTrue();
 
+        service.setStartDate(LocalDate.now().plusDays(1));
+        assertThat(recordTable.get().isEmpty()).isTrue();
     }
 
     @Test
     public void setEndDate() throws Exception {
+        service.setEndDate(LocalDate.now());
+        assertThat(equalsDefaultRecordTableItem(recordTable.get().get(0))).isTrue();
 
+        service.setEndDate(LocalDate.now().minusDays(1));
+        assertThat(recordTable.get().isEmpty()).isTrue();
     }
 
     @Test
@@ -83,5 +95,14 @@ public class ExpenditureRecordServiceTest {
         service.removeRecordTableItem(item);
 
         assertThat(recordTable.getValue().contains(item)).isFalse();
+    }
+
+    private Boolean equalsDefaultRecordTableItem(RecordTableItem recordTableItem) {
+        if (recordTableItem.getItem().equals("some item") && recordTableItem.getAmount().equals("0.42") && recordTableItem.getDate()
+                .equals(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))) {
+            return true;
+        }
+
+        return false;
     }
 }

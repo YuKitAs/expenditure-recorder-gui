@@ -75,8 +75,8 @@ public class ExpenditureRecordService {
     }
 
     private void setPredicate(Optional<Instant> startTime, Optional<Instant> endTime) {
-        filteredRecordTableItems.setPredicate(
-                recordTableItem -> startTime.map(time -> time.isBefore(recordTableItem.getDateInstant())).orElse(true) && endTime.map(
-                        time -> time.isAfter(recordTableItem.getDateInstant())).orElse(true));
+        filteredRecordTableItems.setPredicate(recordTableItem -> startTime.map(
+                time -> time.isBefore(recordTableItem.getDateInstant()) || time.equals(recordTableItem.getDateInstant()))
+                .orElse(true) && endTime.map(time -> time.isAfter(recordTableItem.getDateInstant())).orElse(true));
     }
 }
