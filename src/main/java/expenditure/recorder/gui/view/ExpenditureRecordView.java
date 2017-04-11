@@ -2,7 +2,6 @@ package expenditure.recorder.gui.view;
 
 import java.net.URL;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import expenditure.recorder.gui.model.Record;
@@ -16,7 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
@@ -109,7 +107,6 @@ public class ExpenditureRecordView implements Initializable {
         dateCol.setCellValueFactory(new PropertyValueFactory<Record, String>("date"));
         initRadioButton();
         initFilterBox();
-        initDatePicker();
 
         // setOnActions
         addButton.setOnAction(event -> expenditureRecordViewModel.addRecord());
@@ -129,29 +126,6 @@ public class ExpenditureRecordView implements Initializable {
     private void initFilterBox() {
         filterBox.setItems(timeRanges);
         filterBox.getSelectionModel().selectFirst();
-    }
-
-    private void initDatePicker() {
-        filterDateInDatePicker(datePicker, LocalDate.now(), false);
-        filterDateInDatePicker(fromDatePicker, toDatePicker.getValue(), false);
-        filterDateInDatePicker(toDatePicker, fromDatePicker.getValue(), true);
-    }
-
-    private void filterDateInDatePicker(DatePicker filteredDatePicker, LocalDate dateLimit, boolean dateAfterAllowed) {
-        if (dateLimit == null) {
-            return;
-        }
-
-        filteredDatePicker.setDayCellFactory(dp -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                if (item.isAfter(dateLimit) && !dateAfterAllowed) {
-                    this.setDisable(true);
-                } else if (item.isBefore(dateLimit) && dateAfterAllowed) {
-                    this.setDisable(true);
-                }
-            }
-        });
     }
 
     private void initRadioButton() {
