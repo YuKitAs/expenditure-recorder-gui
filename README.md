@@ -6,10 +6,13 @@ GUI for the web application Expenditure Recorder.
 2. `java -jar path/to/daily-info-hub/target/daily-info-hub-1.0.0-SNAPSHOT.jar` (`mvn clean package` before when necessary)
 
 Screenshots:
-![](../master/screenshots/expenditure-recorder-gui-all.png?raw=true)
+
+![](../master/screenshots/expenditure-recorder-gui-all.png =200x)
 
 Filtered by a customized time range:
-![](../master/screenshots/expenditure-recorder-gui-custom-range.png?raw=true)
+
+![](../master/screenshots/expenditure-recorder-gui-custom-range.png =200x)
 
 Filtered by keyword:
-![](../master/screenshots/expenditure-recorder-gui-keyword.png?raw=true)
+
+![](../master/screenshots/expenditure-recorder-gui-keyword.png =200x)
