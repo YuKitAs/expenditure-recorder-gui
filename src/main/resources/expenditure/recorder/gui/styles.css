@@ -1,14 +1,15 @@
-@font-face {
-    font-family: "KG Traditional Fractions", "Roundo SemiBold";
-}
+@import url('https://fonts.googleapis.com/css?family=Patrick+Hand+SC');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:500');
 
 #pane {
-    -fx-background-color: #a0a0a0;
+    -fx-background-color: #248f8f;
 }
 
 .label {
+    -fx-font-family: 'Ubuntu', sans-serif;
     -fx-text-fill: white;
     -fx-font-weight: bold;
+    -fx-font-size: 16;
 }
 
 #recordTable .column-header .label {
@@ -27,10 +28,11 @@
 }
 
 #totalAmountText {
-    -fx-font-family: "KG Traditional Fractions";
+    -fx-font-family: 'Patrick Hand SC', cursive;
     -fx-fill: white;
     -fx-font-weight: bold;
     -fx-font-size: 50;
+    -fx-effect: dropshadow(gaussian, #424141, 0, 0, 0, 1);
 }
 
 .button {
@@ -39,8 +41,9 @@
     -fx-background-radius: 0;
     -fx-background-color: #c2c2a3;
     -fx-text-fill: white;
-    -fx-font-family: "Roundo SemiBold";
-    -fx-font-size: 13;
+    -fx-font-family: 'Roboto', 'Noto', sans-serif;
+    -fx-font-weight: normal;
+    -fx-font-size: 14;
     -fx-background-insets: 0 0 0 0, 0, 1, 2;
 }
 
@@ -64,7 +67,7 @@
 
 #filterBox .list-cell {
     -fx-background: #c2c2a3;
-    -fx-font-family: "Roundo SemiBold";
+    -fx-font-family: 'Roboto', 'Noto', sans-serif;
     -fx-text-fill: white;
 }
 

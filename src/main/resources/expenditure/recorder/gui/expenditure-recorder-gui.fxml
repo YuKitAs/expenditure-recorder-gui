@@ -29,12 +29,12 @@
     <Pane fx:id="pane" minHeight="700.0" prefHeight="825.0" prefWidth="500.0">
       <children>
         <DatePicker fx:id="datePicker" layoutX="134.0" layoutY="235.0" prefHeight="25.0" prefWidth="120.0"/>
-        <Label layoutX="36.0" layoutY="119.0" prefHeight="25.0" prefWidth="51.0" text="Item: ">
+        <Label layoutX="36.0" layoutY="119.0" prefHeight="25.0" prefWidth="51.0" text="ITEM: ">
           <font>
             <Font size="15.0"/>
           </font>
         </Label>
-        <Label layoutX="36.0" layoutY="178.0" prefHeight="25.0" prefWidth="78.0" text="Amount: ">
+        <Label layoutX="36.0" layoutY="178.0" prefHeight="25.0" prefWidth="80.0" text="AMOUNT: ">
           <font>
             <Font size="15.0"/>
           </font>
@@ -66,14 +66,14 @@
               wrappingWidth="147.0"/>
         <DatePicker fx:id="fromDatePicker" layoutX="346.0" layoutY="178.0" prefHeight="25.0" prefWidth="120.0"/>
         <DatePicker fx:id="toDatePicker" layoutX="346.0" layoutY="235.0" prefHeight="25.0" prefWidth="120.0"/>
-        <Label layoutX="36.0" layoutY="238.0" prefHeight="19.0" prefWidth="57.0" text="Date:">
+        <Label layoutX="36.0" layoutY="238.0" prefHeight="19.0" prefWidth="57.0" text="DATE:">
           <font>
             <Font size="15.0"/>
           </font>
         </Label>
         <Label layoutX="299.0" layoutY="184.0" text="From"/>
         <Label layoutX="316.0" layoutY="241.0" text="To"/>
-        <Text fx:id="totalAmountText" layoutX="230.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="€ 0" textAlignment="RIGHT"
+        <Text fx:id="totalAmountText" layoutX="33.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="€ 0" textAlignment="LEFT"
               wrappingWidth="231.27099609375">
           <font>
             <Font size="35.0"/>
@@ -90,7 +90,7 @@
             <Image url="@filter-icon.png"/>
           </image>
         </ImageView>
-        <Label layoutX="131.0" layoutY="181.0" text="€">
+        <Label layoutX="136.0" layoutY="181.0" text="€">
           <font>
             <Font size="15.0"/>
           </font>

@@ -30,10 +30,11 @@ public class ExpenditureRecordService {
 
     public ObservableList<RecordTableItem> getAllRecordTableItemsFromServer() {
         try {
+
             List<Record> records = recordClient.getAllRecordsFromServer();
             recordTableItems.addAll(records.stream().map(RecordTableItem::from).collect(Collectors.toList()));
         } catch (IOException e) {
-            // Currently do nothing.
+            e.printStackTrace();
         }
 
         return filteredRecordTableItems;
