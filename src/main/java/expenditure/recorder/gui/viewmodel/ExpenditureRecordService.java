@@ -21,6 +21,7 @@ public class ExpenditureRecordService {
 
     private LocalDate startDate = null;
     private LocalDate endDate = null;
+    private String keyword = null;
 
     public ExpenditureRecordService(RecordClient recordClient) {
         this.recordClient = recordClient;
@@ -50,8 +51,9 @@ public class ExpenditureRecordService {
         updatePredicate();
     }
 
-    public void setPredicate(String keyWord) {
-        filteredRecordTableItems.setPredicate(recordTableItem -> recordTableItem.getItem().toLowerCase().contains(keyWord.toLowerCase()));
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+        updatePredicate();
     }
 
     public void addRecordTableItem(RecordTableItem recordTableItem) {
@@ -75,13 +77,15 @@ public class ExpenditureRecordService {
 
     private void updatePredicate() {
         setPredicate(Optional.ofNullable(startDate).map(DateConverter::convertLocalDateToInstant),
-                Optional.ofNullable(endDate).map(date -> date.plusDays(1)).map(DateConverter::convertLocalDateToInstant));
+                Optional.ofNullable(endDate).map(date -> date.plusDays(1)).map(DateConverter::convertLocalDateToInstant),
+                Optional.ofNullable(keyword));
 
     }
 
-    private void setPredicate(Optional<Instant> startTime, Optional<Instant> endTime) {
+    private void setPredicate(Optional<Instant> startTime, Optional<Instant> endTime, Optional<String> keyword) {
         filteredRecordTableItems.setPredicate(recordTableItem -> startTime.map(
                 time -> time.isBefore(recordTableItem.getDateInstant()) || time.equals(recordTableItem.getDateInstant()))
-                .orElse(true) && endTime.map(time -> time.isAfter(recordTableItem.getDateInstant())).orElse(true));
+                .orElse(true) && endTime.map(time -> time.isAfter(recordTableItem.getDateInstant()))
+                .orElse(true) && recordTableItem.getItem().toLowerCase().contains(keyword.map(String::toLowerCase).orElse("")));
     }
 }

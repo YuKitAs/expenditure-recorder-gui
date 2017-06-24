@@ -72,7 +72,7 @@ public class ExpenditureRecordViewModel {
             }
         }));
 
-        itemKeyWord.addListener((observable, oldValue, newValue) -> expenditureRecordService.setPredicate(newValue));
+        itemKeyWord.addListener((observable, oldValue, newValue) -> expenditureRecordService.setKeyword(newValue));
     }
 
     public void addRecord() {
