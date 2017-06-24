@@ -7,12 +7,12 @@ GUI for the web application Expenditure Recorder.
 
 Screenshots:
 
-![](../master/screenshots/expenditure-recorder-gui-all.png =200x)
+![](../master/screenshots/expenditure-recorder-gui-all.png)
 
 Filtered by a customized time range:
 
-![](../master/screenshots/expenditure-recorder-gui-custom-range.png =200x)
+![](../master/screenshots/expenditure-recorder-gui-custom-range.png)
 
 Filtered by keyword:
 
-![](../master/screenshots/expenditure-recorder-gui-keyword.png =200x)
+![](../master/screenshots/expenditure-recorder-gui-keyword.png)
