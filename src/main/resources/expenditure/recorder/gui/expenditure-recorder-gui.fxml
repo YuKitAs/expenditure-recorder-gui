@@ -28,23 +28,23 @@
   <children>
     <Pane fx:id="pane" minHeight="700.0" prefHeight="825.0" prefWidth="500.0">
       <children>
-        <DatePicker fx:id="datePicker" layoutX="134.0" layoutY="235.0" prefHeight="25.0" prefWidth="120.0"/>
-        <Label layoutX="36.0" layoutY="119.0" prefHeight="25.0" prefWidth="51.0" text="ITEM: ">
+        <DatePicker fx:id="datePicker" layoutX="115.0" layoutY="235.0" prefHeight="26.0" prefWidth="138.0"/>
+        <Label layoutX="67.0" layoutY="119.0" prefHeight="25.0" prefWidth="51.0" text="Item ">
           <font>
-            <Font size="15.0"/>
+            <Font size="16.0"/>
           </font>
         </Label>
-        <Label layoutX="36.0" layoutY="178.0" prefHeight="25.0" prefWidth="80.0" text="AMOUNT: ">
+        <Label layoutX="39.0" layoutY="178.0" prefHeight="25.0" prefWidth="80.0" text="Amount ">
           <font>
-            <Font size="15.0"/>
+            <Font size="16.0"/>
           </font>
         </Label>
-        <TextField fx:id="itemField" layoutX="134.0" layoutY="119.0" prefHeight="25.0" prefWidth="120.0"/>
-        <TextField fx:id="amountField" layoutX="156.0" layoutY="178.0" prefHeight="25.0" prefWidth="99.0"/>
-        <Button fx:id="addButton" layoutX="33.0" layoutY="296.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Add"/>
-        <Button fx:id="clearButton" layoutX="114.0" layoutY="296.0" mnemonicParsing="false" prefWidth="63.0" text="Clear"/>
-        <ComboBox fx:id="filterBox" layoutX="346.0" layoutY="119.0" prefHeight="25.0" prefWidth="120.0"/>
-        <TableView fx:id="recordTable" layoutY="361.0" maxWidth="501.0" prefHeight="339.0" prefWidth="501.0">
+        <TextField fx:id="itemField" layoutX="115.0" layoutY="119.0" prefHeight="26.0" prefWidth="138.0"/>
+        <TextField fx:id="amountField" layoutX="137.0" layoutY="178.0" prefHeight="26.0" prefWidth="117.0"/>
+        <Button fx:id="addButton" layoutX="33.0" layoutY="296.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="63.0" text="ADD"/>
+        <Button fx:id="clearButton" layoutX="114.0" layoutY="296.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="63.0" text="CLR"/>
+        <ComboBox fx:id="filterBox" layoutX="336.0" layoutY="119.0" prefHeight="24.0" prefWidth="138.0"/>
+        <TableView fx:id="recordTable" layoutY="361.0" prefHeight="339.0">
           <columns>
             <TableColumn fx:id="itemCol" prefWidth="167.0" resizable="false" text="Item"/>
             <TableColumn fx:id="amountCol" prefWidth="166.0" resizable="false" text="Amount"/>
@@ -54,43 +54,43 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
           </columnResizePolicy>
         </TableView>
-        <Button fx:id="deleteButton" layoutX="195.0" layoutY="296.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0"
-                text="Delete"/>
+        <Button fx:id="deleteButton" layoutX="195.0" layoutY="296.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="63.0"
+                text="DEL"/>
         <Text fill="RED" layoutX="227.0" layoutY="89.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="147.0"/>
         <Text fill="RED" layoutX="136.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="147.0"/>
-        <Text fx:id="itemErrorText" fill="#dd2a07" layoutX="33.0" layoutY="160.0" strokeType="OUTSIDE" strokeWidth="0.0"
+        <Text fx:id="itemErrorText" layoutX="38.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="147.0"/>
-        <Text fx:id="amountErrorText" fill="#dd2a07" layoutX="34.0" layoutY="219.0" strokeType="OUTSIDE" strokeWidth="0.0"
+        <Text fx:id="amountErrorText" layoutX="38.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="223.27099609375"/>
-        <Text fx:id="dateErrorText" fill="#dd2a07" layoutX="33.0" layoutY="277.0" strokeType="OUTSIDE" strokeWidth="0.0"
+        <Text fx:id="dateErrorText" layoutX="38.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0"
               wrappingWidth="147.0"/>
-        <DatePicker fx:id="fromDatePicker" layoutX="346.0" layoutY="178.0" prefHeight="25.0" prefWidth="120.0"/>
-        <DatePicker fx:id="toDatePicker" layoutX="346.0" layoutY="235.0" prefHeight="25.0" prefWidth="120.0"/>
-        <Label layoutX="36.0" layoutY="238.0" prefHeight="19.0" prefWidth="57.0" text="DATE:">
+        <DatePicker fx:id="fromDatePicker" layoutX="336.0" layoutY="178.0" prefHeight="26.0" prefWidth="138.0"/>
+        <DatePicker fx:id="toDatePicker" layoutX="336.0" layoutY="235.0" prefHeight="26.0" prefWidth="138.0"/>
+        <Label layoutX="62.0" layoutY="238.0" prefHeight="19.0" prefWidth="57.0" text="Date">
           <font>
-            <Font size="15.0"/>
+            <Font size="16.0"/>
           </font>
         </Label>
-        <Label layoutX="299.0" layoutY="184.0" text="From"/>
-        <Label layoutX="316.0" layoutY="241.0" text="To"/>
+        <Label layoutX="287.0" layoutY="184.0" text="From"/>
+        <Label layoutX="306.0" layoutY="241.0" text="To"/>
         <Text fx:id="totalAmountText" layoutX="33.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="€ 0" textAlignment="LEFT"
               wrappingWidth="231.27099609375">
           <font>
             <Font size="35.0"/>
           </font>
         </Text>
-        <TextField fx:id="searchField" layoutX="346.0" layoutY="296.0" prefHeight="25.0" prefWidth="120.0" promptText="Search Item"/>
-        <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="315.0" layoutY="300.0">
+        <TextField fx:id="searchField" layoutX="336.0" layoutY="296.0" prefHeight="26.0" prefWidth="138.0" promptText="Search item..."/>
+        <ImageView fitHeight="18.0" fitWidth="18.0" layoutX="305.0" layoutY="300.0">
           <image>
             <Image url="@search-icon.png"/>
           </image>
         </ImageView>
-        <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="315.0" layoutY="122.0">
+        <ImageView fitHeight="20.0" fitWidth="20.0" layoutX="305.0" layoutY="122.0">
           <image>
             <Image url="@filter-icon.png"/>
           </image>
         </ImageView>
-        <Label layoutX="136.0" layoutY="181.0" text="€">
+        <Label layoutX="115.0" layoutY="181.0" text="€">
           <font>
             <Font size="15.0"/>
           </font>
