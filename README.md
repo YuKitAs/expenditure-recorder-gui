@@ -13,7 +13,7 @@ GUI for the web application Expenditure Recorder using [JavaFX](http://docs.orac
 
 **Filters:**
 
-![]((../master/screenshots/expenditure-recorder-gui-filter.png))
+![](../master/screenshots/expenditure-recorder-gui-filter.png)
 
 **Filtered by customized time range:**
 
