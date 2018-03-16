@@ -1,5 +1,5 @@
 # expenditure-recorder-gui
-GUI for the web application Expenditure Recorder using [JavaFX](http://docs.oracle.com/javase/8/javafx/get-started-tutorial/jfx-overview.htm#JFXST784).
+GUI for [Expenditure Recorder](https://github.com/YuKitAs/daily-info-hub) using [JavaFX 8](http://docs.oracle.com/javase/8/javafx/get-started-tutorial/jfx-overview.htm#JFXST784).
 
 ## Usage
 
