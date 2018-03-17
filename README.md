@@ -5,7 +5,8 @@ GUI for [Expenditure Recorder](https://github.com/YuKitAs/daily-info-hub) using 
 
 0. Stop Apache Tomcat if it's running (see [command](https://github.com/YuKitAs/tech-note/blob/a02679c7ec2e2c412653da960fb2946d717457d0/service-config/run-and-test-tomcat-on-ubuntu.md))
 1. Start MongoDB with `sudo service mongod start`
-2. `java -jar path/to/daily-info-hub/target/daily-info-hub-1.0.0-SNAPSHOT.jar` (`mvn clean package` before when necessary)
+2. Open `path/to/daily-info-hub`, run `mvn clean package` and `java -jar target/daily-info-hub-1.0.0-SNAPSHOT.jar`
+3. Open `path/to/expenditure-recorder-gui`, run `mvn clean package` and `jave -jar target/expenditure-recorder-gui-1.0-SNAPSHOT-jar-with-dependencies.jar` with configurations in `/home/user/.expenditure-recorder-gui.conf`
 
 ## Screenshots
 
